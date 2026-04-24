@@ -1,6 +1,6 @@
 const WEB_APP_URL = 'https://script.google.com/macros/s/AKfycbzB4T_V7URSfkk9EuQNk1JCU1G3VOsc7SD60opd_7_D7zLgrelr3Rih69BIb9LR_oJN/exec';
 let allData = [];
-let windowsOptions = []; // เก็บตัวเลือกจาก Sheet "List"
+let windowsOptions = [];
 
 async function fetchData() {
     const status = document.getElementById('statusMessage');
@@ -11,9 +11,10 @@ async function fetchData() {
         const json = await response.json();
         
         allData = json.devices;
-        windowsOptions = json.options; // รับตัวเลือกจาก Google Sheets
+        windowsOptions = json.options;
         
-        setupEngineerFilter();
+        setupFilters(); // เปลี่ยนชื่อฟังก์ชันเพื่อให้ครอบคลุมทั้ง Engineer และ Search
+        renderDevices(); // เรียกใช้งานโดยไม่ส่ง parameter เพื่อให้หน้าแรกโชว์ทั้งหมด
         status.innerHTML = '';
     } catch (error) {
         status.innerHTML = '<div class="alert alert-danger">เกิดข้อผิดพลาดในการโหลดข้อมูล</div>';
@@ -21,30 +22,52 @@ async function fetchData() {
 }
 
 // 2. ตั้งค่า Dropdown กรองชื่อช่าง
-function setupEngineerFilter() {
-    const filter = document.getElementById('engineerFilter');
-    const engineers = [...new Set(allData.map(item => item.engineer))].filter(e => e); // ดึงชื่อที่ไม่ซ้ำ
+function setupFilters() {
+    const engFilter = document.getElementById('engineerFilter');
+    const searchInput = document.getElementById('searchInput');
     
-    filter.innerHTML = '<option value="">-- เลือกชื่อช่าง --</option>';
+    // ตั้งค่ารายชื่อช่าง
+    const engineers = [...new Set(allData.map(item => item.engineer))].filter(e => e).sort();
+    engFilter.innerHTML = '<option value="">-- แสดงทั้งหมด (ทุกช่าง) --</option>';
     engineers.forEach(eng => {
         const opt = document.createElement('option');
         opt.value = eng;
         opt.textContent = eng;
-        filter.appendChild(opt);
+        engFilter.appendChild(opt);
     });
 
-    filter.addEventListener('change', (e) => renderDevices(e.target.value));
+    // เมื่อเลือกช่าง
+    engFilter.addEventListener('change', () => filterAndRender());
+    
+    // เมื่อพิมพ์ค้นหา
+    searchInput.addEventListener('input', () => filterAndRender());
 }
 
 // 3. แสดงรายการเครื่องในรูปแบบ Card (เหมาะกับมือถือมากกว่าตาราง)
-function renderDevices(selectedEngineer) {
+function filterAndRender() {
+    const selectedEngineer = document.getElementById('engineerFilter').value;
+    const searchText = document.getElementById('searchInput').value.toLowerCase();
+    
     const container = document.getElementById('deviceList');
     container.innerHTML = '';
 
-    const filtered = selectedEngineer ? allData.filter(d => d.engineer === selectedEngineer) : [];
+    const filtered = allData.filter(d => {
+        // เงื่อนไขช่าง: ถ้าเลือก "ทั้งหมด" หรือชื่อช่างตรงกัน
+        const matchEng = selectedEngineer === "" || d.engineer === selectedEngineer;
+        
+        // เงื่อนไข Search: ค้นหาใน Customer หรือ S/N
+        const matchSearch = d.customer.toLowerCase().includes(searchText) || 
+                            d.sn.toString().toLowerCase().includes(searchText);
+        
+        return matchEng && matchSearch;
+    });
+
+    if (filtered.length === 0) {
+        container.innerHTML = '<div class="text-center text-muted p-5">ไม่พบข้อมูลที่ตรงตามเงื่อนไข</div>';
+        return;
+    }
 
     filtered.forEach(item => {
-        // สร้างตัวเลือก Dropdown จากข้อมูลที่ดึงมา
         const optionsHtml = windowsOptions.map(opt => 
             `<option value="${opt}" ${item.windows === opt ? 'selected' : ''}>${opt}</option>`
         ).join('');
@@ -60,6 +83,7 @@ function renderDevices(selectedEngineer) {
                         <span class="badge bg-info text-dark">${item.model}</span>
                         <span class="text-secondary small">S/N: ${item.sn}</span>
                     </div>
+                    <div class="small text-muted mb-2">Engineer: ${item.engineer || 'ไม่ระบุ'}</div>
                     
                     <label class="small fw-bold">Windows Version:</label>
                     <select class="form-select" onchange="updateWindows(${item.rowNumber}, this)">
