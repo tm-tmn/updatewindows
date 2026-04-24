@@ -2,13 +2,14 @@ const WEB_APP_URL = 'https://script.google.com/macros/s/AKfycbzB4T_V7URSfkk9EuQN
 let allData = [];
 let windowsOptions = [];
 
+setupTheme();
+fetchData();
 
 function setupTheme() {
     const themeToggle = document.getElementById('themeToggle');
     const themeIcon = document.getElementById('themeIcon');
     const body = document.body;
 
-    // เช็คค่าเก่าที่เคยเลือกไว้
     const savedTheme = localStorage.getItem('theme') || 'light-mode';
     body.className = savedTheme;
     updateIcon(savedTheme);
@@ -26,32 +27,29 @@ function setupTheme() {
     });
 
     function updateIcon(theme) {
-        if (theme === 'dark-mode') {
-            themeIcon.className = 'bi bi-sun-fill'; // เปลี่ยนเป็นไอคอนพระอาทิตย์
-        } else {
-            themeIcon.className = 'bi bi-moon-stars-fill'; // เปลี่ยนเป็นพระจันทร์
-        }
+        if (!themeIcon) return;
+        themeIcon.className = theme === 'dark-mode' ? 'bi bi-sun-fill' : 'bi bi-moon-stars-fill';
     }
 }
 
 async function fetchData() {
     const status = document.getElementById('statusMessage');
-    status.innerHTML = '<div class="spinner"></div>';
+    if (status) status.innerHTML = '<div class="spinner-border text-primary" role="status"></div>';
     
     try {
         const response = await fetch(WEB_APP_URL);
         const json = await response.json();
         
-        allData = json.devices;
-        windowsOptions = json.options;
+        allData = json.devices || [];
+        windowsOptions = json.options || [];
         
         setupFilters();
         filterAndRender(); 
         
-        status.innerHTML = '';
+        if (status) status.innerHTML = '';
     } catch (error) {
-        console.error(error); 
-        status.innerHTML = '<div class="alert alert-danger">เกิดข้อผิดพลาดในการโหลดข้อมูล</div>';
+        console.error("Fetch Error:", error); 
+        if (status) status.innerHTML = '<div class="alert alert-danger">เกิดข้อผิดพลาดในการโหลดข้อมูล</div>';
     }
 }
 
@@ -59,6 +57,9 @@ function setupFilters() {
     const engFilter = document.getElementById('engineerFilter');
     const searchInput = document.getElementById('searchInput');
     const hideSwitch = document.getElementById('hideCompletedSwitch');
+    
+    if (!engFilter || !searchInput || !hideSwitch) return;
+
     const engineers = [...new Set(allData.map(item => item.engineer))].filter(e => e).sort();
     engFilter.innerHTML = '<option value="">--แสดงทั้งหมด--</option>';
     engineers.forEach(eng => {
@@ -68,9 +69,9 @@ function setupFilters() {
         engFilter.appendChild(opt);
     });
 
-    engFilter.addEventListener('change', () => filterAndRender());
-    searchInput.addEventListener('input', () => filterAndRender());
-    hideSwitch.addEventListener('change', () => filterAndRender());
+    engFilter.addEventListener('change', filterAndRender);
+    searchInput.addEventListener('input', filterAndRender);
+    hideSwitch.addEventListener('change', filterAndRender);
 }
 
 function filterAndRender() {
@@ -79,19 +80,22 @@ function filterAndRender() {
     const isHideCompleted = document.getElementById('hideCompletedSwitch').checked;
     
     const container = document.getElementById('deviceList');
+    if (!container) return;
     container.innerHTML = '';
 
     const filtered = allData.filter(d => {
         const matchEng = selectedEngineer === "" || d.engineer === selectedEngineer;
-        const matchSearch = d.customer.toLowerCase().includes(searchText) || 
-                            d.sn.toString().toLowerCase().includes(searchText);
+        const customerName = (d.customer || "").toLowerCase();
+        const snNumber = (d.sn || "").toString().toLowerCase();
+        
+        const matchSearch = customerName.includes(searchText) || snNumber.includes(searchText);
         
         const matchStatus = !isHideCompleted || (d.windows === "" || d.windows === null || d.windows === "-- เลือก --");
         return matchEng && matchSearch && matchStatus;
     });
 
     if (filtered.length === 0) {
-        container.innerHTML = '<div class="text-center text-muted p-5">ไม่พบข้อมูลที่ตรงตามเงื่อนไข</div>';
+        container.innerHTML = '<div class="col-12 text-center text-muted p-5">ไม่พบข้อมูลที่ตรงตามเงื่อนไข</div>';
         return;
     }
 
@@ -104,18 +108,17 @@ function filterAndRender() {
         card.className = 'col-12 col-md-6 device-item';
         card.innerHTML = `
             <div class="card device-card">
-                <div class="card-body p-0">
+                <div class="card-body">
                     <div class="d-flex justify-content-between align-items-start mb-2">
-                        <div class="customer-title">${item.customer}</div>
-                        <span class="model-badge">${item.model}</span>
+                        <div class="customer-title">${item.customer || 'N/A'}</div>
+                        <span class="model-badge">${item.model || 'N/A'}</span>
                     </div>
                     <div class="text-muted small mb-3">
-                        <i class="bi bi-geo-alt"></i> ${item.city} | <span class="sn-text">S/N: ${item.sn}</span>
+                        <i class="bi bi-geo-alt"></i> ${item.city || ''} | <span class="sn-text">S/N: ${item.sn || '-'}</span>
                     </div>
-                    <div class="small text-muted mb-3" style="border-left: 3px solid #eee; padding-left: 10px;">
+                    <div class="small text-muted mb-3" style="border-left: 3px solid #ddd; padding-left: 10px;">
                         Engineer: <strong>${item.engineer || 'Unassigned'}</strong>
                     </div>
-                    
                     <label class="small fw-bold mb-2 text-uppercase" style="font-size: 0.7rem; letter-spacing: 0.05em;">Windows Version</label>
                     <select class="form-select" onchange="updateWindows(${item.rowNumber}, this)">
                         <option value="">-- Select Version --</option>
@@ -130,29 +133,19 @@ function filterAndRender() {
 
 async function updateWindows(rowNumber, selectElement) {
     const newValue = selectElement.value;
-
     selectElement.classList.remove('is-valid', 'is-invalid');
     selectElement.style.backgroundColor = "#fff3cd";
     selectElement.disabled = true;
 
     try {
-        const response = await fetch(WEB_APP_URL, {
+        await fetch(WEB_APP_URL, {
             method: 'POST',
             mode: 'no-cors',
-            cache: 'no-cache',
-            body: JSON.stringify({
-                rowNumber: rowNumber,
-                windowValue: newValue
-            })
+            body: JSON.stringify({ rowNumber, windowValue: newValue })
         });
 
-        selectElement.style.backgroundColor = "#d1e7dd";
-        selectElement.style.borderColor = "#198754";
-
         const item = allData.find(d => d.rowNumber === rowNumber);
-        if (item) {
-            item.windows = newValue;
-        }
+        if (item) item.windows = newValue;
 
         const isHideCompleted = document.getElementById('hideCompletedSwitch').checked;
         if (isHideCompleted && newValue !== "") {
@@ -161,11 +154,9 @@ async function updateWindows(rowNumber, selectElement) {
             selectElement.style.backgroundColor = "#d1e7dd";
             selectElement.style.borderColor = "#198754";
         }
-
     } catch (error) {
-        alert('บันทึกไม่สำเร็จ! กรุณาตรวจสอบอินเทอร์เน็ต');
+        alert('บันทึกไม่สำเร็จ!');
         selectElement.style.backgroundColor = "#f8d7da";
-        selectElement.style.borderColor = "#dc3545";
     } finally {
         selectElement.disabled = false;
         setTimeout(() => {
@@ -174,6 +165,3 @@ async function updateWindows(rowNumber, selectElement) {
         }, 2000);
     }
 }
-
-fetchData();
-setupTheme();
