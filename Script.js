@@ -14,9 +14,11 @@ async function fetchData() {
         windowsOptions = json.options;
         
         setupFilters();
-        renderDevices();
+        filterAndRender(); 
+        
         status.innerHTML = '';
     } catch (error) {
+        console.error(error); 
         status.innerHTML = '<div class="alert alert-danger">เกิดข้อผิดพลาดในการโหลดข้อมูล</div>';
     }
 }
