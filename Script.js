@@ -13,8 +13,8 @@ async function fetchData() {
         allData = json.devices;
         windowsOptions = json.options;
         
-        setupFilters(); // เปลี่ยนชื่อฟังก์ชันเพื่อให้ครอบคลุมทั้ง Engineer และ Search
-        renderDevices(); // เรียกใช้งานโดยไม่ส่ง parameter เพื่อให้หน้าแรกโชว์ทั้งหมด
+        setupFilters();
+        renderDevices();
         status.innerHTML = '';
     } catch (error) {
         status.innerHTML = '<div class="alert alert-danger">เกิดข้อผิดพลาดในการโหลดข้อมูล</div>';
@@ -24,8 +24,6 @@ async function fetchData() {
 function setupFilters() {
     const engFilter = document.getElementById('engineerFilter');
     const searchInput = document.getElementById('searchInput');
-    
-    // ตั้งค่ารายชื่อช่าง
     const engineers = [...new Set(allData.map(item => item.engineer))].filter(e => e).sort();
     engFilter.innerHTML = '<option value="">-- แสดงทั้งหมด (ทุกช่าง) --</option>';
     engineers.forEach(eng => {
@@ -35,14 +33,10 @@ function setupFilters() {
         engFilter.appendChild(opt);
     });
 
-    // เมื่อเลือกช่าง
     engFilter.addEventListener('change', () => filterAndRender());
-    
-    // เมื่อพิมพ์ค้นหา
     searchInput.addEventListener('input', () => filterAndRender());
 }
 
-// ฟังก์ชันหลักในการกรองและแสดงผล
 function filterAndRender() {
     const selectedEngineer = document.getElementById('engineerFilter').value;
     const searchText = document.getElementById('searchInput').value.toLowerCase();
@@ -51,13 +45,9 @@ function filterAndRender() {
     container.innerHTML = '';
 
     const filtered = allData.filter(d => {
-        // เงื่อนไขช่าง: ถ้าเลือก "ทั้งหมด" หรือชื่อช่างตรงกัน
         const matchEng = selectedEngineer === "" || d.engineer === selectedEngineer;
-        
-        // เงื่อนไข Search: ค้นหาใน Customer หรือ S/N
         const matchSearch = d.customer.toLowerCase().includes(searchText) || 
                             d.sn.toString().toLowerCase().includes(searchText);
-        
         return matchEng && matchSearch;
     });
 
@@ -96,18 +86,14 @@ function filterAndRender() {
     });
 }
 
-
-// 4. ฟังก์ชันบันทึกข้อมูลกลับไปยัง Google Sheets
 async function updateWindows(rowNumber, selectElement) {
     const newValue = selectElement.value;
-    
-    // 1. เริ่มบันทึก: แสดงสถานะ Loading (สีเหลือง)
-    selectElement.classList.remove('is-valid', 'is-invalid'); // ล้างสถานะเก่า
-    selectElement.style.backgroundColor = "#fff3cd"; // สีเหลืองอ่อน
+
+    selectElement.classList.remove('is-valid', 'is-invalid');
+    selectElement.style.backgroundColor = "#fff3cd";
     selectElement.disabled = true;
 
     try {
-        // ใช้ fetch แบบปกติ (ไม่ใช้ no-cors เพื่อให้เช็ค response ได้แม่นยำขึ้น)
         const response = await fetch(WEB_APP_URL, {
             method: 'POST',
             mode: 'no-cors',
@@ -118,7 +104,6 @@ async function updateWindows(rowNumber, selectElement) {
             })
         });
 
-        // 2. บันทึกสำเร็จ: แสดงสถานะ Success (สีเขียว)
         selectElement.style.backgroundColor = "#d1e7dd"; // สีเขียวอ่อน
         selectElement.style.borderColor = "#198754";
         
