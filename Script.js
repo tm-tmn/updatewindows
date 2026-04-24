@@ -87,6 +87,8 @@ async function updateWindows(rowNumber, selectElement) {
         // ใช้ fetch แบบปกติ (ไม่ใช้ no-cors เพื่อให้เช็ค response ได้แม่นยำขึ้น)
         const response = await fetch(WEB_APP_URL, {
             method: 'POST',
+            mode: 'no-cors',
+            cache: 'no-cache',
             body: JSON.stringify({
                 rowNumber: rowNumber,
                 windowValue: newValue
