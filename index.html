@@ -14,16 +14,22 @@
     
     <div class="card shadow-sm mb-4">
         <div class="card-body">
-            <label for="engineerFilter" class="form-label fw-bold">กรองรายชื่อช่าง (EN 2026):</label>
-            <select id="engineerFilter" class="form-select form-select-lg">
-                <option value="">กำลังโหลดรายชื่อ...</option>
-            </select>
+            <div class="mb-3">
+                <label for="engineerFilter" class="form-label fw-bold">กรองรายชื่อช่าง (EN 2026):</label>
+                <select id="engineerFilter" class="form-select form-select-lg">
+                    <option value="">กำลังโหลดรายชื่อ...</option>
+                </select>
+            </div>
+            
+            <div class="">
+                <label for="searchInput" class="form-label fw-bold">ค้นหา (S/N หรือชื่อลูกค้า):</label>
+                <input type="text" id="searchInput" class="form-control" placeholder="พิมพ์ S/N หรือชื่อ Final Customer...">
+            </div>
         </div>
     </div>
 
     <div id="statusMessage" class="text-center my-3"></div>
-    <div id="deviceList" class="row g-3">
-        </div>
+    <div id="deviceList" class="row g-3"></div>
 </div>
 
 <script src="Script.js"></script>
