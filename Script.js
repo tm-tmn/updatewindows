@@ -44,6 +44,7 @@ function setupFilters() {
 function filterAndRender() {
     const selectedEngineer = document.getElementById('engineerFilter').value;
     const searchText = document.getElementById('searchInput').value.toLowerCase();
+    const isHideCompleted = document.getElementById('hideCompletedSwitch').checked;
     
     const container = document.getElementById('deviceList');
     container.innerHTML = '';
@@ -52,7 +53,9 @@ function filterAndRender() {
         const matchEng = selectedEngineer === "" || d.engineer === selectedEngineer;
         const matchSearch = d.customer.toLowerCase().includes(searchText) || 
                             d.sn.toString().toLowerCase().includes(searchText);
-        return matchEng && matchSearch;
+        
+        const matchStatus = !isHideCompleted || (d.windows === "" || d.windows === null || d.windows === "-- เลือก --");
+        return matchEng && matchSearch && matchStatus;
     });
 
     if (filtered.length === 0) {
@@ -112,7 +115,17 @@ async function updateWindows(rowNumber, selectElement) {
         selectElement.style.borderColor = "#198754";
 
         const item = allData.find(d => d.rowNumber === rowNumber);
-        if (item) item.windows = newValue;
+        if (item) {
+            item.windows = newValue;
+        }
+
+        const isHideCompleted = document.getElementById('hideCompletedSwitch').checked;
+        if (isHideCompleted && newValue !== "") {
+            filterAndRender(); 
+        } else {
+            selectElement.style.backgroundColor = "#d1e7dd";
+            selectElement.style.borderColor = "#198754";
+        }
 
     } catch (error) {
         alert('บันทึกไม่สำเร็จ! กรุณาตรวจสอบอินเทอร์เน็ต');
