@@ -1,41 +1,123 @@
+:root {
+    /* Palette สีแบบ Luxury: Midnight Blue & Gold/Info accents */
+    --primary-color: #1a1c23;      /* สีหลักเข้มๆ */
+    --accent-color: #0d6efd;       /* สี Badge หรือจุดเน้น */
+    --bg-light: #f8f9fa;           /* สีพื้นหลังแบบสะอาด */
+    --text-main: #2d3436;          /* สีตัวอักษรหลัก */
+    --text-muted: #636e72;         /* สีตัวอักษรรอง */
+    --card-shadow: 0 10px 30px rgba(0, 0, 0, 0.05); /* เงาแบบนุ่มๆ */
+}
+
 body {
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: var(--bg-light);
+    color: var(--text-main);
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    -webkit-font-smoothing: antialiased;
+    letter-spacing: -0.01em;
 }
 
-/* ปรับแต่ง Card ให้ดูง่ายบนมือถือ */
+/* Luxury Header */
+h2 {
+    font-weight: 800;
+    color: var(--primary-color);
+    letter-spacing: -0.03em;
+    margin-bottom: 1.5rem;
+}
+
+/* Glassmorphism Filter Section */
+.filter-card {
+    background: rgba(255, 255, 255, 0.8);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    border-radius: 20px;
+    padding: 1.5rem;
+    box-shadow: var(--card-shadow);
+    margin-bottom: 2rem;
+}
+
+/* Smart Device Card */
 .device-card {
-    border-left: 5px solid #0d6efd;
-    transition: transform 0.2s;
+    background: #ffffff;
+    border: none;
+    border-radius: 20px;
+    padding: 1.2rem;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    box-shadow: var(--card-shadow);
+    position: relative;
+    overflow: hidden;
 }
 
-.device-card:active {
-    transform: scale(0.98);
+.device-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
 }
 
-.customer-name {
-    font-size: 1.1rem;
-    color: #333;
-}
-
+/* Badge Styling */
 .model-badge {
-    font-size: 0.85rem;
-    background-color: #e9ecef;
-    padding: 2px 8px;
-    border-radius: 4px;
+    background: linear-gradient(135deg, #6e8efb, #a7a7af);
+    color: white;
+    padding: 4px 12px;
+    border-radius: 50px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    text-transform: uppercase;
 }
 
-/* Loader หมุนๆ */
-.spinner {
-    width: 40px;
-    height: 40px;
-    border: 4px solid #f3f3f3;
-    border-top: 4px solid #0d6efd;
-    border-radius: 50%;
-    animation: spin 1s linear infinite;
-    margin: 20px auto;
+/* Customer & S/N Styling */
+.customer-title {
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: var(--primary-color);
+    margin-bottom: 0.2rem;
+    line-height: 1.3;
 }
 
-@keyframes spin {
-    0% { transform: rotate(0deg); }
-    100% { transform: rotate(360deg); }
+.sn-text {
+    font-family: 'JetBrains Mono', monospace; /* ดูเป็น Technical */
+    font-size: 0.8rem;
+    color: var(--text-muted);
+}
+
+/* Smart Input & Select */
+.form-select, .form-control {
+    border: 1px solid #e0e0e0;
+    border-radius: 12px;
+    padding: 0.75rem 1rem;
+    font-size: 0.95rem;
+    transition: border-color 0.2s;
+}
+
+.form-select:focus, .form-control:focus {
+    border-color: var(--accent-color);
+    box-shadow: 0 0 0 4px rgba(13, 110, 253, 0.1);
+    outline: none;
+}
+
+/* Custom Switch for Luxury look */
+.form-check-input:checked {
+    background-color: var(--accent-color);
+    border-color: var(--accent-color);
+}
+
+/* Animation for High Performance feel */
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.device-item {
+    animation: fadeIn 0.4s ease-out forwards;
+}
+
+/* Mobile Optimizations */
+@media (max-width: 768px) {
+    .container-fluid {
+        padding: 1rem;
+    }
+    .device-card {
+        padding: 1rem;
+    }
+    .customer-title {
+        font-size: 1rem;
+    }
 }
