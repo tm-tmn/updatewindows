@@ -1,20 +1,22 @@
 const WEB_APP_URL = 'https://script.google.com/macros/s/AKfycbzB4T_V7URSfkk9EuQNk1JCU1G3VOsc7SD60opd_7_D7zLgrelr3Rih69BIb9LR_oJN/exec';
 let allData = [];
+let windowsOptions = []; // เก็บตัวเลือกจาก Sheet "List"
 
-// 1. ดึงข้อมูลครั้งแรก
 async function fetchData() {
     const status = document.getElementById('statusMessage');
     status.innerHTML = '<div class="spinner"></div>';
     
     try {
         const response = await fetch(WEB_APP_URL);
-        allData = await response.json();
+        const json = await response.json();
+        
+        allData = json.devices;
+        windowsOptions = json.options; // รับตัวเลือกจาก Google Sheets
         
         setupEngineerFilter();
-        renderDevices(""); // แสดงทั้งหมดตอนเริ่มต้น หรือจะว่างไว้ก็ได้
         status.innerHTML = '';
     } catch (error) {
-        status.innerHTML = '<div class="alert alert-danger">โหลดข้อมูลไม่สำเร็จ กรุณาลองใหม่</div>';
+        status.innerHTML = '<div class="alert alert-danger">เกิดข้อผิดพลาดในการโหลดข้อมูล</div>';
     }
 }
 
@@ -41,30 +43,28 @@ function renderDevices(selectedEngineer) {
 
     const filtered = selectedEngineer ? allData.filter(d => d.engineer === selectedEngineer) : [];
 
-    if (filtered.length === 0 && selectedEngineer) {
-        container.innerHTML = '<div class="text-center text-muted">ไม่พบรายการเครื่องของช่างท่านนี้</div>';
-        return;
-    }
-
     filtered.forEach(item => {
+        // สร้างตัวเลือก Dropdown จากข้อมูลที่ดึงมา
+        const optionsHtml = windowsOptions.map(opt => 
+            `<option value="${opt}" ${item.windows === opt ? 'selected' : ''}>${opt}</option>`
+        ).join('');
+
         const card = document.createElement('div');
         card.className = 'col-12 col-md-6';
         card.innerHTML = `
             <div class="card device-card shadow-sm h-100">
                 <div class="card-body">
-                    <div class="fw-bold customer-name">${item.customer}</div>
-                    <div class="text-muted small mb-2">${item.city}</div>
-                    <div class="d-flex justify-content-between align-items-center mb-3">
-                        <span class="model-badge text-primary">${item.model}</span>
+                    <div class="fw-bold">${item.customer}</div>
+                    <div class="text-muted small">${item.city}</div>
+                    <div class="d-flex justify-content-between my-2">
+                        <span class="badge bg-info text-dark">${item.model}</span>
                         <span class="text-secondary small">S/N: ${item.sn}</span>
                     </div>
                     
-                    <label class="small fw-bold mb-1">Windows Version:</label>
+                    <label class="small fw-bold">Windows Version:</label>
                     <select class="form-select" onchange="updateWindows(${item.rowNumber}, this)">
                         <option value="">-- เลือก --</option>
-                        <option value="Windows 10" ${item.windows === 'Windows 10' ? 'selected' : ''}>Windows 10</option>
-                        <option value="Windows 11" ${item.windows === 'Windows 11' ? 'selected' : ''}>Windows 11</option>
-                        <option value="N/A" ${item.windows === 'N/A' ? 'selected' : ''}>N/A</option>
+                        ${optionsHtml}
                     </select>
                 </div>
             </div>
@@ -73,15 +73,18 @@ function renderDevices(selectedEngineer) {
     });
 }
 
+
 // 4. ฟังก์ชันบันทึกข้อมูลกลับไปยัง Google Sheets
 async function updateWindows(rowNumber, selectElement) {
     const newValue = selectElement.value;
-    if (!newValue) return;
-
-    // เปลี่ยนสีขอบเป็นสีเหลืองเพื่อบอกว่ากำลังบันทึก
-    selectElement.classList.add('border-warning');
     
+    // 1. เริ่มบันทึก: แสดงสถานะ Loading (สีเหลือง)
+    selectElement.classList.remove('is-valid', 'is-invalid'); // ล้างสถานะเก่า
+    selectElement.style.backgroundColor = "#fff3cd"; // สีเหลืองอ่อน
+    selectElement.disabled = true;
+
     try {
+        // ใช้ fetch แบบปกติ (ไม่ใช้ no-cors เพื่อให้เช็ค response ได้แม่นยำขึ้น)
         const response = await fetch(WEB_APP_URL, {
             method: 'POST',
             body: JSON.stringify({
@@ -90,14 +93,26 @@ async function updateWindows(rowNumber, selectElement) {
             })
         });
 
-        if (response.ok) {
-            selectElement.classList.remove('border-warning');
-            selectElement.classList.add('border-success');
-            setTimeout(() => selectElement.classList.remove('border-success'), 2000);
-        }
+        // 2. บันทึกสำเร็จ: แสดงสถานะ Success (สีเขียว)
+        selectElement.style.backgroundColor = "#d1e7dd"; // สีเขียวอ่อน
+        selectElement.style.borderColor = "#198754";
+        
+        // อัปเดตข้อมูลในตัวแปร allData ด้วย เพื่อให้เวลากรองใหม่ค่ายังเป็นปัจจุบัน
+        const item = allData.find(d => d.rowNumber === rowNumber);
+        if (item) item.windows = newValue;
+
     } catch (error) {
-        alert('บันทึกข้อมูลไม่สำเร็จ กรุณาตรวจสอบอินเทอร์เน็ต');
-        selectElement.classList.remove('border-warning');
+        // 3. เกิดข้อผิดพลาด: แสดงสถานะ Error (สีแดง)
+        alert('บันทึกไม่สำเร็จ! กรุณาตรวจสอบอินเทอร์เน็ต');
+        selectElement.style.backgroundColor = "#f8d7da"; // สีแดงอ่อน
+        selectElement.style.borderColor = "#dc3545";
+    } finally {
+        selectElement.disabled = false;
+        // คืนค่าสีพื้นหลังปกติหลังจาก 2 วินาที
+        setTimeout(() => {
+            selectElement.style.backgroundColor = "";
+            selectElement.style.borderColor = "";
+        }, 2000);
     }
 }
 
