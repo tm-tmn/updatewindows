@@ -69,7 +69,7 @@ function filterAndRender() {
         ).join('');
 
         const card = document.createElement('div');
-        card.className = 'col-12 col-md-6 device-item'; // เพิ่ม device-item เพื่อให้มี Animation
+        card.className = 'col-12 col-md-6 device-item';
         card.innerHTML = `
             <div class="card device-card">
                 <div class="card-body p-0">
