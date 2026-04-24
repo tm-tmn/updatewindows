@@ -26,6 +26,7 @@ async function fetchData() {
 function setupFilters() {
     const engFilter = document.getElementById('engineerFilter');
     const searchInput = document.getElementById('searchInput');
+    const hideSwitch = document.getElementById('hideCompletedSwitch');
     const engineers = [...new Set(allData.map(item => item.engineer))].filter(e => e).sort();
     engFilter.innerHTML = '<option value="">--แสดงทั้งหมด--</option>';
     engineers.forEach(eng => {
@@ -37,6 +38,7 @@ function setupFilters() {
 
     engFilter.addEventListener('change', () => filterAndRender());
     searchInput.addEventListener('input', () => filterAndRender());
+    hideSwitch.addEventListener('change', () => filterAndRender());
 }
 
 function filterAndRender() {
