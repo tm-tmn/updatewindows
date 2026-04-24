@@ -21,7 +21,6 @@ async function fetchData() {
     }
 }
 
-// 2. ตั้งค่า Dropdown กรองชื่อช่าง
 function setupFilters() {
     const engFilter = document.getElementById('engineerFilter');
     const searchInput = document.getElementById('searchInput');
@@ -43,7 +42,7 @@ function setupFilters() {
     searchInput.addEventListener('input', () => filterAndRender());
 }
 
-// 3. แสดงรายการเครื่องในรูปแบบ Card (เหมาะกับมือถือมากกว่าตาราง)
+// ฟังก์ชันหลักในการกรองและแสดงผล
 function filterAndRender() {
     const selectedEngineer = document.getElementById('engineerFilter').value;
     const searchText = document.getElementById('searchInput').value.toLowerCase();
