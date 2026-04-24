@@ -69,21 +69,24 @@ function filterAndRender() {
         ).join('');
 
         const card = document.createElement('div');
-        card.className = 'col-12 col-md-6';
+        card.className = 'col-12 col-md-6 device-item'; // เพิ่ม device-item เพื่อให้มี Animation
         card.innerHTML = `
-            <div class="card device-card shadow-sm h-100">
-                <div class="card-body">
-                    <div class="fw-bold">${item.customer}</div>
-                    <div class="text-muted small">${item.city}</div>
-                    <div class="d-flex justify-content-between my-2">
-                        <span class="badge bg-info text-dark">${item.model}</span>
-                        <span class="text-secondary small">S/N: ${item.sn}</span>
+            <div class="card device-card">
+                <div class="card-body p-0">
+                    <div class="d-flex justify-content-between align-items-start mb-2">
+                        <div class="customer-title">${item.customer}</div>
+                        <span class="model-badge">${item.model}</span>
                     </div>
-                    <div class="small text-muted mb-2">Engineer: ${item.engineer || 'ไม่ระบุ'}</div>
+                    <div class="text-muted small mb-3">
+                        <i class="bi bi-geo-alt"></i> ${item.city} | <span class="sn-text">S/N: ${item.sn}</span>
+                    </div>
+                    <div class="small text-muted mb-3" style="border-left: 3px solid #eee; padding-left: 10px;">
+                        Engineer: <strong>${item.engineer || 'Unassigned'}</strong>
+                    </div>
                     
-                    <label class="small fw-bold">Windows Version:</label>
+                    <label class="small fw-bold mb-2 text-uppercase" style="font-size: 0.7rem; letter-spacing: 0.05em;">Windows Version</label>
                     <select class="form-select" onchange="updateWindows(${item.rowNumber}, this)">
-                        <option value="">-- เลือก --</option>
+                        <option value="">-- Select Version --</option>
                         ${optionsHtml}
                     </select>
                 </div>
