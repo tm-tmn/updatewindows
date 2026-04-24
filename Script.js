@@ -2,6 +2,38 @@ const WEB_APP_URL = 'https://script.google.com/macros/s/AKfycbzB4T_V7URSfkk9EuQN
 let allData = [];
 let windowsOptions = [];
 
+
+function setupTheme() {
+    const themeToggle = document.getElementById('themeToggle');
+    const themeIcon = document.getElementById('themeIcon');
+    const body = document.body;
+
+    // เช็คค่าเก่าที่เคยเลือกไว้
+    const savedTheme = localStorage.getItem('theme') || 'light-mode';
+    body.className = savedTheme;
+    updateIcon(savedTheme);
+
+    themeToggle.addEventListener('click', () => {
+        if (body.classList.contains('light-mode')) {
+            body.classList.replace('light-mode', 'dark-mode');
+            localStorage.setItem('theme', 'dark-mode');
+            updateIcon('dark-mode');
+        } else {
+            body.classList.replace('dark-mode', 'light-mode');
+            localStorage.setItem('theme', 'light-mode');
+            updateIcon('light-mode');
+        }
+    });
+
+    function updateIcon(theme) {
+        if (theme === 'dark-mode') {
+            themeIcon.className = 'bi bi-sun-fill'; // เปลี่ยนเป็นไอคอนพระอาทิตย์
+        } else {
+            themeIcon.className = 'bi bi-moon-stars-fill'; // เปลี่ยนเป็นพระจันทร์
+        }
+    }
+}
+
 async function fetchData() {
     const status = document.getElementById('statusMessage');
     status.innerHTML = '<div class="spinner"></div>';
@@ -144,3 +176,4 @@ async function updateWindows(rowNumber, selectElement) {
 }
 
 fetchData();
+setupTheme();
