@@ -27,7 +27,7 @@ function setupFilters() {
     const engFilter = document.getElementById('engineerFilter');
     const searchInput = document.getElementById('searchInput');
     const engineers = [...new Set(allData.map(item => item.engineer))].filter(e => e).sort();
-    engFilter.innerHTML = '<option value="">-- แสดงทั้งหมด (ทุกช่าง) --</option>';
+    engFilter.innerHTML = '<option value="">--แสดงทั้งหมด--</option>';
     engineers.forEach(eng => {
         const opt = document.createElement('option');
         opt.value = eng;
@@ -106,21 +106,18 @@ async function updateWindows(rowNumber, selectElement) {
             })
         });
 
-        selectElement.style.backgroundColor = "#d1e7dd"; // สีเขียวอ่อน
+        selectElement.style.backgroundColor = "#d1e7dd";
         selectElement.style.borderColor = "#198754";
-        
-        // อัปเดตข้อมูลในตัวแปร allData ด้วย เพื่อให้เวลากรองใหม่ค่ายังเป็นปัจจุบัน
+
         const item = allData.find(d => d.rowNumber === rowNumber);
         if (item) item.windows = newValue;
 
     } catch (error) {
-        // 3. เกิดข้อผิดพลาด: แสดงสถานะ Error (สีแดง)
         alert('บันทึกไม่สำเร็จ! กรุณาตรวจสอบอินเทอร์เน็ต');
-        selectElement.style.backgroundColor = "#f8d7da"; // สีแดงอ่อน
+        selectElement.style.backgroundColor = "#f8d7da";
         selectElement.style.borderColor = "#dc3545";
     } finally {
         selectElement.disabled = false;
-        // คืนค่าสีพื้นหลังปกติหลังจาก 2 วินาที
         setTimeout(() => {
             selectElement.style.backgroundColor = "";
             selectElement.style.borderColor = "";
@@ -128,5 +125,4 @@ async function updateWindows(rowNumber, selectElement) {
     }
 }
 
-// เริ่มโหลดข้อมูล
 fetchData();
