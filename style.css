@@ -6,50 +6,57 @@
     --text-main: #2d3436;          /* สีตัวอักษรหลัก */
     --text-muted: #636e72;         /* สีตัวอักษรรอง */
     --card-shadow: 0 10px 30px rgba(0, 0, 0, 0.05); /* เงาแบบนุ่มๆ */
+    --transition-speed: 0.3s;
+}
+
+body.light-mode {
+    --bg-body: #f8f9fa;
+    --bg-card: #ffffff;
+    --text-main: #1a1c23;
+    --text-muted: #636e72;
+    --border-color: #e0e0e0;
+    --filter-bg: rgba(255, 255, 255, 0.8);
+    --shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+}
+
+body.dark-mode {
+    --bg-body: #121212;
+    --bg-card: #1e1e1e;
+    --text-main: #e0e0e0;
+    --text-muted: #b0b0b0;
+    --border-color: #333333;
+    --filter-bg: rgba(30, 30, 30, 0.8);
+    --shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
 }
 
 body {
-    background-color: var(--bg-light);
+    background-color: var(--bg-body);
+    color: var(--text-main);color: var(--text-main);
+    transition: background-color var(--transition-speed), color var(--transition-speed);
+}
+
+/* --- Theme Button Style --- */
+.btn-theme {
+    background: var(--bg-card);
     color: var(--text-main);
-    font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-    -webkit-font-smoothing: antialiased;
-    letter-spacing: -0.01em;
+    border: 1px solid var(--border-color);
+    border-radius: 12px;
+    width: 45px;
+    height: 45px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all var(--transition-speed);
 }
 
-/* Luxury Header */
-h2 {
-    font-weight: 800;
-    color: var(--primary-color);
-    letter-spacing: -0.03em;
-    margin-bottom: 1.5rem;
-}
+h2 { color: var(--text-main); }
+.customer-title { color: var(--text-main); }
 
-/* Glassmorphism Filter Section */
-.filter-card {
-    background: rgba(255, 255, 255, 0.8);
-    backdrop-filter: blur(10px);
-    border: 1px solid rgba(255, 255, 255, 0.3);
-    border-radius: 20px;
-    padding: 1.5rem;
-    box-shadow: var(--card-shadow);
-    margin-bottom: 2rem;
-}
-
-/* Smart Device Card */
-.device-card {
-    background: #ffffff;
-    border: none;
-    border-radius: 20px;
-    padding: 1.2rem;
-    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-    box-shadow: var(--card-shadow);
-    position: relative;
-    overflow: hidden;
-}
-
-.device-card:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
+.device-card, .filter-card {
+    background-color: var(--bg-card) !important;
+    border: 1px solid var(--border-color) !important;
+    box-shadow: var(--shadow);
+    color: var(--text-main);
 }
 
 /* Badge Styling */
@@ -78,19 +85,15 @@ h2 {
     color: var(--text-muted);
 }
 
-/* Smart Input & Select */
-.form-select, .form-control {
-    border: 1px solid #e0e0e0;
-    border-radius: 12px;
-    padding: 0.75rem 1rem;
-    font-size: 0.95rem;
-    transition: border-color 0.2s;
+.form-control, .form-select {
+    background-color: var(--bg-card);
+    color: var(--text-main);
+    border-color: var(--border-color);
 }
 
-.form-select:focus, .form-control:focus {
-    border-color: var(--accent-color);
-    box-shadow: 0 0 0 4px rgba(13, 110, 253, 0.1);
-    outline: none;
+.form-control:focus, .form-select:focus {
+    background-color: var(--bg-card);
+    color: var(--text-main);
 }
 
 /* Custom Switch for Luxury look */
