@@ -18,24 +18,36 @@
             </button>
         </div>
 
-        <div class="card filter-card mb-4">
-            <div class="card-body">
-                <div class="mb-3">
-                    <label for="engineerFilter" class="form-label fw-bold">Service Name</label>
+        <div class="card filter-card mb-4 shadow-sm">
+        <div class="card-body">
+            <div class="row g-3">
+                <div class="col-12 col-md-4">
+                    <label for="engineerFilter" class="form-label small fw-bold">Service Name</label>
                     <select id="engineerFilter" class="form-select">
                         <option value="">กำลังโหลดข้อมูล...</option>
                     </select>
                 </div>
-                <div class="mb-3">
-                    <label for="searchInput" class="form-label fw-bold">Search</label>
-                    <input type="text" id="searchInput" class="form-control" placeholder="พิมพ์ S/N หรือชื่อลูกค้า...">
+                <div class="col-12 col-md-8">
+                    <label for="searchInput" class="form-label small fw-bold">Search</label>
+                    <input type="text" id="searchInput" class="form-control" placeholder="ค้นหา S/N หรือชื่อลูกค้า...">
                 </div>
-                <div class="form-check form-switch">
+            </div>
+    
+            <div class="d-flex justify-content-between align-items-center mt-3 pt-3 border-top">
+                <div class="form-check form-switch m-0">
                     <input class="form-check-input" type="checkbox" id="hideCompletedSwitch">
-                    <label class="form-check-label small fw-bold" for="hideCompletedSwitch">ซ่อนรายการที่บันทึกแล้ว</label>
+                    <label class="form-check-label small fw-bold text-muted" for="hideCompletedSwitch">
+                        ซ่อนรายการที่บันทึกสำเร็จ
+                    </label>
+                </div>
+                <div class="small fw-bold">
+                    <span class="text-muted">แสดงทั้งหมด:</span> 
+                    <span id="itemCount" class="badge bg-primary rounded-pill">0</span> 
+                    <span class="text-muted">รายการ</span>
                 </div>
             </div>
         </div>
+    </div>
 
         <div id="statusMessage" class="text-center my-3"></div>
         <div id="deviceList" class="row g-3"></div>
