@@ -87,10 +87,12 @@ function filterAndRender() {
         const matchEng = selectedEngineer === "" || d.engineer === selectedEngineer;
         const customerName = (d.customer || "").toLowerCase();
         const snNumber = (d.sn || "").toString().toLowerCase();
-        
         const matchSearch = customerName.includes(searchText) || snNumber.includes(searchText);
-        
         const matchStatus = !isHideCompleted || (d.windows === "" || d.windows === null || d.windows === "-- เลือก --");
+        const countLabel = document.getElementById('itemCount');
+            if (countLabel) {
+                countLabel.textContent = filtered.length;
+            }
         return matchEng && matchSearch && matchStatus;
     });
 
