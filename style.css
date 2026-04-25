@@ -17,8 +17,8 @@ body.light-mode {
 body.dark-mode {
     --bg-body: #121212;
     --bg-card: #1e1e1e;
-    --text-main: #f8f9fa;   /* ปรับให้สว่างขึ้นเพื่อให้อ่านออกในโหมดมืด */
-    --text-muted: #a0a0a0;  /* ปรับให้เทาสว่างขึ้น */
+    --text-main: #f8f9fa;   
+    --text-muted: #a0a0a0;  
     --border-color: #333333;
     --shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
 }
@@ -30,6 +30,16 @@ body {
     font-family: 'Inter', -apple-system, sans-serif;
     transition: background-color var(--transition-speed), color var(--transition-speed);
     min-height: 100vh;
+}
+
+/* จัดกึ่งกลาง Header และปรับระยะห่าง */
+h2 { 
+    color: var(--text-main) !important; 
+    font-weight: 800;
+    text-align: center;      /* จัดข้อความให้อยู่กึ่งกลางหน้าจอ */
+    margin-top: 2.5rem;
+    margin-bottom: 2rem;
+    letter-spacing: -0.02em;
 }
 
 /* --- Luxury Components --- */
@@ -47,10 +57,19 @@ body {
     cursor: pointer;
 }
 
-.device-card, .filter-card {
-    max-width: 1000px;
-    margin-left: auto;
-    margin-right: auto;
+/* ปรับสมดุล Filter Card ให้ดู Compact ไม่กว้างเกินไป */
+.filter-card {
+    max-width: 850px;        /* ลดความกว้างลงเพื่อให้ดู Balance กับเนื้อหา */
+    margin: 0 auto 3rem auto; /* จัดกึ่งกลางและเพิ่มระยะห่างด้านล่าง */
+    background-color: var(--bg-card) !important;
+    border: 1px solid var(--border-color) !important;
+    box-shadow: var(--shadow);
+    border-radius: 24px !important; /* เพิ่มความโค้งให้ดูนุ่มนวล */
+    padding: 2rem !important;
+}
+
+/* รายการ Card อุปกรณ์ด้านล่าง */
+.device-card {
     background-color: var(--bg-card) !important;
     border: 1px solid var(--border-color) !important;
     box-shadow: var(--shadow);
@@ -58,36 +77,36 @@ body {
     padding: 1.5rem !important;
     transition: transform 0.2s ease;
     color: var(--text-main) !important;
-}
-
-
-/* เส้นคั่นบางๆ สำหรับส่วนท้ายของ Filter */
-.border-top {
-    border-color: var(--border-color) !important;
-    opacity: 0.6;
-}
-
-/* ปรับขนาด Badge ตัวเลขให้ดู Smart */
-#itemCount {
-    padding: 0.4em 0.8em;
-    font-size: 0.85rem;
-    background: linear-gradient(135deg, #6e8efb, #4a6cf7) !important;
+    height: 100%;
 }
 
 .device-card:hover {
     transform: translateY(-4px);
 }
 
-/* --- Typography (จุดที่ตัวหนังสืออ่านไม่ออก) --- */
-h2 { 
-    color: var(--text-main) !important; 
-    font-weight: 700;
+/* ส่วนท้ายของ Filter (Toggle & Count) */
+.border-top {
+    border-top: 1px solid var(--border-color) !important;
+    padding-top: 1.5rem !important;
+    margin-top: 1rem;
+    opacity: 1;
 }
 
+/* ปรับ Badge ตัวเลขให้นูนเด่น */
+#itemCount {
+    padding: 0.4em 0.8em;
+    font-size: 0.85rem;
+    font-weight: 700;
+    border-radius: 50px;
+    background: linear-gradient(135deg, #6e8efb, #4a6cf7) !important;
+    box-shadow: 0 4px 10px rgba(110, 142, 251, 0.3);
+}
+
+/* --- Typography --- */
 .customer-title { 
     font-size: 1.1rem;
     font-weight: 700;
-    color: var(--text-main) !important; /* บังคับให้เปลี่ยนสีตาม Mode */
+    color: var(--text-main) !important;
     line-height: 1.3;
 }
 
@@ -110,7 +129,7 @@ h2 {
     padding: 0.6rem 1rem;
 }
 
-/* แก้ไขไอคอนลูกศรในช่องเลือกสำหรับโหมดมืด */
+/* ปรับลูกศร Dropdown ในโหมดมืด */
 body.dark-mode .form-select {
     background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3e%3cpath fill='none' stroke='%23f8f9fa' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='m2 5 6 6 6-6'/%3e%3c/svg%3e");
 }
@@ -119,14 +138,12 @@ body.dark-mode .form-select {
     border-color: var(--accent-color) !important;
     box-shadow: 0 0 0 3px rgba(13, 110, 253, 0.15) !important;
     outline: none;
-    background-color: var(--bg-card) !important;
-    color: var(--text-main) !important;
 }
 
-/* Badge */
+/* Badge Model */
 .model-badge {
     background: linear-gradient(135deg, #6e8efb, #4a6cf7);
-    color: white !important; /* บังคับสีขาวเสมอเพื่อให้อ่านออกบนพื้น Gradient */
+    color: white !important;
     padding: 4px 12px;
     border-radius: 50px;
     font-size: 0.7rem;
@@ -145,5 +162,6 @@ body.dark-mode .form-select {
 
 @media (max-width: 768px) {
     .customer-title { font-size: 1rem; }
-    .device-card { padding: 1rem; }
+    .device-card { padding: 1rem !important; }
+    .filter-card { padding: 1.25rem !important; margin: 0 10px 2rem 10px; }
 }
