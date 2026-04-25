@@ -121,7 +121,7 @@ function filterAndRender() {
                     </div>
                     <label class="small fw-bold mb-2 text-uppercase" style="font-size: 0.7rem; letter-spacing: 0.05em;">Windows Version</label>
                     <select class="form-select" onchange="updateWindows(${item.rowNumber}, this)">
-                        <option value="">-- Select Version --</option>
+                        <option value="">-- Select Windows --</option>
                         ${optionsHtml}
                     </select>
                 </div>
