@@ -89,12 +89,14 @@ function filterAndRender() {
         const snNumber = (d.sn || "").toString().toLowerCase();
         const matchSearch = customerName.includes(searchText) || snNumber.includes(searchText);
         const matchStatus = !isHideCompleted || (d.windows === "" || d.windows === null || d.windows === "-- เลือก --");
-        const countLabel = document.getElementById('itemCount');
-            if (countLabel) {
-                countLabel.textContent = filtered.length;
-            }
+        
         return matchEng && matchSearch && matchStatus;
     });
+
+    const countLabel = document.getElementById('itemCount');
+    if (countLabel) {
+        countLabel.textContent = filtered.length;
+    }
 
     if (filtered.length === 0) {
         container.innerHTML = '<div class="col-12 text-center text-muted p-5">ไม่พบข้อมูลที่ตรงตามเงื่อนไข</div>';
