@@ -48,13 +48,30 @@ body {
 }
 
 .device-card, .filter-card {
+    max-width: 1000px;
+    margin-left: auto;
+    margin-right: auto;
     background-color: var(--bg-card) !important;
     border: 1px solid var(--border-color) !important;
     box-shadow: var(--shadow);
     border-radius: 18px;
-    padding: 1.25rem;
+    padding: 1.5rem !important;
     transition: transform 0.2s ease;
     color: var(--text-main) !important;
+}
+
+
+/* เส้นคั่นบางๆ สำหรับส่วนท้ายของ Filter */
+.border-top {
+    border-color: var(--border-color) !important;
+    opacity: 0.6;
+}
+
+/* ปรับขนาด Badge ตัวเลขให้ดู Smart */
+#itemCount {
+    padding: 0.4em 0.8em;
+    font-size: 0.85rem;
+    background: linear-gradient(135deg, #6e8efb, #4a6cf7) !important;
 }
 
 .device-card:hover {
