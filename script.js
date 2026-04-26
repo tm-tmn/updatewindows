@@ -96,7 +96,7 @@ function setupFilters() {
     engFilter.addEventListener('change', filterAndRender);
     searchInput.addEventListener('input', filterAndRender);
     hideSwitch.addEventListener('change', filterAndRender);
-
+}
 
     
 function filterAndRender() {
