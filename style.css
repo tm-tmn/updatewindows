@@ -131,36 +131,62 @@ body.dark-mode .form-select {
 /* =========================================
    5. MODALS (Manage Windows & Charts)
    ========================================= */
-.modal-content, .modal-header, .modal-body, .modal-footer {
+/* พื้นหลังหลักของ Modal ทุกส่วน */
+.modal-content, 
+.modal-header, 
+.modal-body, 
+.modal-footer {
     background-color: var(--bg-card) !important;
     color: var(--text-main) !important;
     border-color: var(--border-color) !important;
 }
 
-.modal-header .modal-title, .modal-body h6, .modal-body label {
+/* บังคับสีตัวอักษรหัวข้อและ Label */
+.modal-header .modal-title, 
+.modal-body h6, 
+.modal-body label {
     color: var(--text-main) !important;
 }
 
-body.dark-mode .btn-close {
-    filter: invert(1) grayscale(100%) brightness(200%);
-}
-
-/* รายการ Windows Version ใน Modal */
-#currentWindowsList .bg-white, 
+/* จัดการส่วนที่มีคลาส bg-light (พื้นที่ส่วนเพิ่มเวอร์ชันใหม่) และ bg-white */
+#manageWindowsModal .bg-light,
+#manageWindowsModal .bg-white,
 #currentWindowsList .bg-light,
+#currentWindowsList .bg-white,
 .modal-content .card.bg-light-subtle {
     background-color: var(--bg-body) !important;
     border: 1px solid var(--border-color) !important;
     color: var(--text-main) !important;
+    transition: background-color var(--transition-speed);
+}
+
+/* ปรับแต่งปุ่ม Close */
+body.dark-mode .btn-close {
+    filter: invert(1) grayscale(100%) brightness(200%);
 }
 
 /* ปุ่มแก้ไข/ลบ ในรายการ */
-#currentWindowsList .btn-outline-primary { color: var(--accent-color); border-color: var(--accent-color); }
-#currentWindowsList .btn-outline-danger { color: #dc3545; border-color: #dc3545; }
-body.dark-mode #currentWindowsList .btn:hover { color: #fff !important; }
+#currentWindowsList .btn-outline-primary { 
+    color: var(--accent-color); 
+    border-color: var(--accent-color); 
+}
+#currentWindowsList .btn-outline-danger { 
+    color: #dc3545; 
+    border-color: #dc3545; 
+}
+body.dark-mode #currentWindowsList .btn:hover { 
+    color: #fff !important; 
+}
+
+/* รายการปุ่มเวอร์ชันที่แสดงเป็น Badge (ถ้ามี) */
+body.dark-mode #currentWindowsList .badge {
+    border: 1px solid var(--border-color);
+}
 
 /* Charts & Dashboard Progress */
-#dashboardModal .modal-dialog { max-width: 900px; }
+#dashboardModal .modal-dialog { 
+    max-width: 900px; 
+}
 
 .chart-container {
     position: relative;
@@ -177,6 +203,11 @@ body.dark-mode #currentWindowsList .btn:hover { color: #fff !important; }
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
 }
+
+/* ปรับสีข้อความแจ้งเตือนสีแดง/น้ำเงิน ใน Modal ให้ซอฟต์ลงเมื่อเป็น Dark Mode */
+body.dark-mode .modal-body .text-primary { color: #4dabf7 !important; }
+body.dark-mode .modal-body .text-danger { color: #ff8787 !important; }
+
 
 /* =========================================
    6. MISC & ANIMATIONS
