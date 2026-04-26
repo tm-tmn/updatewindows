@@ -233,8 +233,8 @@ async function toggleEditWindows(index) {
         const newValue = document.getElementById(`input-win-${index}`).value.trim();
         if (!newValue) return Swal.fire('แจ้งเตือน', 'กรุณาระบุชื่อเวอร์ชัน', 'warning');
         
-        Swal.fire({ title: 'กำลังบันทึก...', allowOutsideClick: false, didOpen: () => Swal.showLoading() });
-
+        const success = await updateListOnServer('editWindowsVersion', { index: index, newValue: newValue });
+        
         if (success) {
             input.setAttribute('readonly', true);
             input.classList.replace('bg-light', 'bg-transparent');
@@ -340,7 +340,8 @@ async function addNewWindowsVersion() {
     if (!newVal) return Swal.fire('แจ้งเตือน', 'ระบุชื่อ Windows', 'warning');
 
     Swal.fire({ title: 'กำลังบันทึก...', allowOutsideClick: false, didOpen: () => Swal.showLoading() });
-
+    const success = await updateListOnServer('addWindowsVersion', { versionName: newVal });
+    
     if (success) {
         document.getElementById('newWindowsInput').value = '';
         document.getElementById('adminPasswordInput').value = '';
