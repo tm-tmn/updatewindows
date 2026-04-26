@@ -196,7 +196,7 @@ function calculateAndRenderStats() {
     });
 
     const engLabels = Object.keys(engineerStats).sort();
-    const engTotalData = engLabels.map(eng => engineerStats[eng].total);
+    const engRemainingData = engLabels.map(eng => engineerStats[eng].total - engineerStats[eng].completed);
     const engCompletedData = engLabels.map(eng => engineerStats[eng].completed);
 
     const isDarkMode = document.body.classList.contains('dark-mode');
@@ -253,7 +253,7 @@ function calculateAndRenderStats() {
             labels: engLabels,
             datasets: [
                 { label: 'สำเร็จ', data: engCompletedData, backgroundColor: '#198754' },
-                { label: 'ทั้งหมด', data: engTotalData, backgroundColor: '#adb5bd' }
+                { label: 'รอดำเนินการ', data: engRemainingData, backgroundColor: '#adb5bd' }
             ]
         },
         options: {
