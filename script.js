@@ -230,7 +230,7 @@ async function toggleEditWindows(index) {
         btn.innerHTML = '<i class="bi bi-floppy-fill"></i>';
         btn.classList.replace('btn-outline-primary', 'btn-success');
     } else {
-        const newValue = input.value.trim();
+        const newValue = document.getElementById(`input-win-${index}`).value.trim();
         if (!newValue) return Swal.fire('แจ้งเตือน', 'กรุณาระบุชื่อเวอร์ชัน', 'warning');
         
         Swal.fire({ title: 'กำลังบันทึก...', allowOutsideClick: false, didOpen: () => Swal.showLoading() });
@@ -243,7 +243,12 @@ async function toggleEditWindows(index) {
             input.classList.replace('bg-light', 'bg-transparent');
             btn.innerHTML = '<i class="bi bi-pencil-square"></i>';
             btn.classList.replace('btn-success', 'btn-outline-primary');
-            Swal.fire({ icon: 'success', title: 'แก้ไขเรียบร้อย', timer: 1500, showConfirmButton: false });
+            Swal.fire({
+                icon: 'success',
+                title: 'แก้ไขเรียบร้อย',
+                timer: 1500,
+                showConfirmButton: false
+            });
         }
     }
 }
