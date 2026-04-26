@@ -259,20 +259,30 @@ async function deleteWindowsVersion(index) {
     });
 
     if (result.isConfirmed) {
-        Swal.fire({ title: 'กำลังลบ...', didOpen: () => Swal.showLoading() });
-        await updateListOnServer('deleteWindowsVersion', { index: index });
-        Swal.fire({ icon: 'success', title: 'ลบเรียบร้อย', timer: 1500, showConfirmButton: false });
+        Swal.fire({ title: 'กำลังลบ...', allowOutsideClick: false, didOpen: () => Swal.showLoading() });
+        
+        const success = await updateListOnServer('deleteWindowsVersion', { index: index });
+        
+        if (success) {
+            // หน่วงเวลาเล็กน้อยเพื่อให้คนดูทัน
+            setTimeout(() => {
+                Swal.fire({ icon: 'success', title: 'ลบเรียบร้อย', timer: 1500, showConfirmButton: false });
+            }, 300);
+        }
     }
 }
 
 // 4. [ฟังก์ชันกลาง] ตัวส่งข้อมูลไป Server (อันที่คุณเขียนใหม่)
 async function updateListOnServer(action, payload) {
-    const passInput = document.getElementById('adminPasswordInput').value;
+    const passField = document.getElementById('adminPasswordInput');
+    const passInput = passField.value;
     const now = new Date();
     const correctPass = `${String(now.getDate()).padStart(2, '0')}${String(now.getMonth() + 1).padStart(2, '0')}${now.getFullYear()}`;
 
     if (passInput !== correctPass) {
         Swal.fire('ผิดพลาด', 'รหัสผ่าน Admin ไม่ถูกต้อง', 'error');
+        // เคลียร์รหัสผ่านทันทีถ้าใส่ผิด
+        passField.value = ''; 
         return false;
     }
 
@@ -283,19 +293,26 @@ async function updateListOnServer(action, payload) {
             body: JSON.stringify({ action: action, ...payload })
         });
         
+        // เคลียร์รหัสผ่านหลังจากส่งข้อมูลสำเร็จ
+        passField.value = '';
+
         if (action === 'deleteWindowsVersion') {
             windowsOptions.splice(payload.index, 1);
         } else if (action === 'editWindowsVersion') {
             windowsOptions[payload.index] = payload.newValue;
         } else if (action === 'addWindowsVersion') {
             windowsOptions.push(payload.versionName);
-            windowsOptions.sort(); // เรียงใหม่เฉพาะตอนเพิ่ม
+            windowsOptions.sort();
         }
         
         renderCurrentWindows();
         filterAndRender(); 
+        
+        // บังคับให้ Swal ตัวเก่าปิดไปก่อนเพื่อให้ตัวใหม่ขึ้นมาได้
+        Swal.close(); 
         return true;
     } catch (e) {
+        passField.value = ''; // เคลียร์รหัสผ่านแม้เกิดข้อผิดพลาด
         Swal.fire('ผิดพลาด', 'ไม่สามารถเชื่อมต่อได้', 'error');
         return false;
     }
