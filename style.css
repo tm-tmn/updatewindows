@@ -57,6 +57,41 @@ h2 {
     cursor: pointer;
 }
 
+/* สไตล์เฉพาะปุ่ม Dashboard (ให้สีโทนฟ้า/น้ำเงิน) */
+.btn-dashboard {
+    background: var(--bg-card);
+    color: var(--accent-color); /* ใช้สีหลักของเว็บ */
+}
+
+/* สไตล์เฉพาะปุ่ม Theme (คงเดิม) */
+.btn-theme {
+    background: var(--bg-card);
+    color: var(--text-main);
+}
+
+/* --- ปรับแต่ง Modal ให้ดู Luxury --- */
+.modal-content {
+    background-color: var(--bg-card);
+    color: var(--text-main);
+}
+
+/* ปรับสีพื้นหลังการ์ดภายใน Modal ตาม Theme */
+.modal-content .card.bg-light-subtle {
+    background-color: var(--bg-body) !important;
+    color: var(--text-main);
+}
+
+/* CSS สำหรับ Chart.js ในโหมดมืด (เพื่อให้แกนและตัวเลขสว่างขึ้น) */
+body.dark-mode .modal-content .card.bg-light-subtle canvas {
+    color: white !important;
+}
+
+/* CSS สำหรับ Chart.js ในโหมดมืด เพื่อให้แกนและตัวเลขสว่างขึ้น */
+body.dark-mode #progressPieChart,
+body.dark-mode #engineerBarChart {
+    color: white !important;
+}
+
 /* ปรับสมดุล Filter Card ให้ดู Compact ไม่กว้างเกินไป */
 .filter-card {
     max-width: 850px;        /* ลดความกว้างลงเพื่อให้ดู Balance กับเนื้อหา */
