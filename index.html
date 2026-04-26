@@ -70,58 +70,63 @@
             </div>
     </div>
 
-    <div class="modal fade" id="dashboardModal" tabindex="-1" aria-labelledby="dashboardModalLabel" aria-hidden="true">
-        <div class="modal-dialog modal-xl modal-dialog-centered"> <div class="modal-content border-0 rounded-4 shadow-lg">
-                <div class="modal-header border-bottom-0 pt-4 px-4">
-                    <h5 class="modal-title fw-bold fs-4" id="dashboardModalLabel">
-                        <i class="bi bi-bar-chart-line-fill"></i> สรุปภาพรวม Update Windows
-                    </h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body p-4">
-                    <div class="row g-4">
-                        <div class="col-12 col-md-4 text-center">
-                            <div class="card h-100 border-0 bg-light-subtle rounded-4 p-3 shadow-sm">
-                                <h6 class="fw-bold mb-3">ความคืบหน้าภาพรวม (%)</h6>
-                                <div style="height: 250px; width: 100%;">
-                                    <canvas id="progressPieChart"></canvas>
-                                </div>
+                    <div class="modal fade" id="dashboardModal" tabindex="-1" aria-labelledby="dashboardModalLabel" aria-hidden="true">
+                    <div class="modal-dialog modal-xl modal-dialog-centered">
+                        <div class="modal-content border-0 rounded-4 shadow-lg">
+                            <div class="modal-header border-bottom-0 pt-4 px-4">
+                                <h5 class="modal-title fw-bold fs-4" id="dashboardModalLabel">
+                                    <i class="bi bi-bar-chart-line-fill"></i> สรุปภาพรวม Update Windows
+                                </h5>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                             </div>
-                        </div>
-
-                        <div class="col-12 col-md-8">
-                            <div class="card h-100 border-0 bg-light-subtle rounded-4 p-3 shadow-sm">
-                                <h6 class="fw-bold mb-3">ผลสรุปรายช่าง (สำเร็จ / ทั้งหมด)</h6>
-                                <div style="height: 250px; width: 100%;">
-                                    <canvas id="engineerBarChart"></canvas>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <div class="row g-4 mt-2">
-                        <div class="col-12">
-                            <div class="card border-0 bg-light-subtle rounded-4 p-4 shadow-sm">
-                                <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center mb-4 gap-3">
-                                    <h6 class="fw-bold m-0">ความคืบหน้าแยกตาม Model</h6>
-                                    <div class="d-flex align-items-center gap-2">
-                                        <select id="modelEngineerFilter" class="form-select form-select-sm shadow-sm" style="min-width: 180px;" onchange="calculateAndRenderStats()">
-                                            </select>
+                            <div class="modal-body p-4">
+                                <div class="row g-4">
+                                    <div class="col-12 col-md-4 text-center">
+                                        <div class="card h-100 border-0 bg-light-subtle rounded-4 p-3 shadow-sm">
+                                            <h6 class="fw-bold mb-3">ความคืบหน้าภาพรวม (%)</h6>
+                                            <div style="height: 250px; width: 100%;">
+                                                <canvas id="progressPieChart"></canvas>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-12 col-md-8">
+                                        <div class="card h-100 border-0 bg-light-subtle rounded-4 p-3 shadow-sm">
+                                            <h6 class="fw-bold mb-3">ผลสรุปรายช่าง (สำเร็จ / ทั้งหมด)</h6>
+                                            <div style="height: 250px; width: 100%;">
+                                                <canvas id="engineerBarChart"></canvas>
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
-                                <div style="height: 350px; width: 100%;">
-                                    <canvas id="modelBarChart"></canvas>
+                                
+                                <div class="row g-4 mt-2">
+                                    <div class="col-12">
+                                        <div class="card border-0 bg-light-subtle rounded-4 p-4 shadow-sm">
+                                            <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center mb-4 gap-3">
+                                                <h6 class="fw-bold m-0">ความคืบหน้าแยกตาม Model</h6>
+                                                <div class="d-flex align-items-center gap-2">
+                                                    <select id="modelEngineerFilter" class="form-select form-select-sm shadow-sm" style="min-width: 180px;" onchange="calculateAndRenderStats()">
+                                                        </select>
+                                                </div>
+                                            </div>
+                                            <div style="height: 350px; width: 100%;">
+                                                <canvas id="modelBarChart"></canvas>
+                                            </div>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                         </div>
                     </div>
                 </div>
-
-                <div class="modal fade" id="manageWindowsModal" tabindex="-1" aria-hidden="true">
+                
+                <div class="modal fade" id="manageWindowsModal" tabindex="-1" aria-labelledby="manageWindowsModalLabel" aria-hidden="true">
                     <div class="modal-dialog modal-dialog-centered">
                         <div class="modal-content border-0 rounded-4 shadow-lg">
                             <div class="modal-header border-bottom-0">
-                                <h5 class="modal-title fw-bold"><i class="bi bi-gear-fill me-2"></i>Manage Windows Versions</h5>
+                                <h5 class="modal-title fw-bold" id="manageWindowsModalLabel">
+                                    <i class="bi bi-gear-fill me-2"></i>Manage Windows Versions
+                                </h5>
                                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                             </div>
                             <div class="modal-body p-4">
