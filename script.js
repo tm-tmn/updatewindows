@@ -178,16 +178,33 @@ function calculateAndRenderStats() {
     ).length;
     const remainingItems = totalItems - completedItems;
     
-    // คำนวณเปอร์เซ็นต์
     const completionPercentage = totalItems > 0 ? ((completedItems / totalItems) * 100).toFixed(1) : 0;
 
-    // อัปเดตหัวข้อใน Modal ให้โชว์ % ทันที
     const modalTitle = document.querySelector('#dashboardModalLabel');
     if (modalTitle) {
         modalTitle.innerHTML = `<i class="bi bi-bar-chart-line-fill text-primary me-2"></i> ความคืบหน้าภาพรวม: ${completionPercentage}%`;
     }
 
-    // ส่วนการตั้งค่า Pie Chart
+    const engineerStats = {};
+    allData.forEach(d => {
+        const eng = d.engineer || 'ไม่ระบุ';
+        if (!engineerStats[eng]) engineerStats[eng] = { total: 0, completed: 0 };
+        engineerStats[eng].total++;
+        if (d.windows && d.windows !== "" && d.windows !== null && d.windows !== "-- เลือก --") {
+            engineerStats[eng].completed++;
+        }
+    });
+
+    const engLabels = Object.keys(engineerStats).sort();
+    const engTotalData = engLabels.map(eng => engineerStats[eng].total);
+    const engCompletedData = engLabels.map(eng => engineerStats[eng].completed);
+
+    const isDarkMode = document.body.classList.contains('dark-mode');
+    const chartTextColor = isDarkMode ? '#f8f9fa' : '#1a1c23';
+    const gridColor = isDarkMode ? 'rgba(255,255,255,0.1)' : 'rgba(0,0,0,0.1)';
+    // --------------------------------------------------
+
+    // 1. Pie/Doughnut Chart
     const pieCtx = document.getElementById('progressPieChart').getContext('2d');
     if (myPieChart) myPieChart.destroy();
     myPieChart = new Chart(pieCtx, {
@@ -197,7 +214,7 @@ function calculateAndRenderStats() {
             datasets: [{
                 data: [completedItems, remainingItems],
                 backgroundColor: ['#198754', '#adb5bd'],
-                borderColor: document.body.classList.contains('dark-mode') ? '#1e1e1e' : '#fff'
+                borderColor: isDarkMode ? '#1e1e1e' : '#fff'
             }]
         },
         options: {
@@ -206,9 +223,8 @@ function calculateAndRenderStats() {
             plugins: {
                 legend: { 
                     position: 'bottom',
-                    labels: { color: document.body.classList.contains('dark-mode') ? '#f8f9fa' : '#1a1c23' }
+                    labels: { color: chartTextColor }
                 },
-                // แสดงรายละเอียด % เมื่อเอาเมาส์ชี้
                 tooltip: {
                     callbacks: {
                         label: function(context) {
@@ -223,7 +239,7 @@ function calculateAndRenderStats() {
         }
     });
 
-    // Bar Chart
+    // 2. Bar Chart
     const barCtx = document.getElementById('engineerBarChart').getContext('2d');
     if (myBarChart) myBarChart.destroy();
     myBarChart = new Chart(barCtx, {
