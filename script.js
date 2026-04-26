@@ -1,7 +1,7 @@
 const WEB_APP_URL = 'https://script.google.com/macros/s/AKfycbzB4T_V7URSfkk9EuQNk1JCU1G3VOsc7SD60opd_7_D7zLgrelr3Rih69BIb9LR_oJN/exec';
 let allData = [];
 let windowsOptions = [];
-let myPieChart, myBarChart;
+let myPieChart, myBarChart, myModelChart;
 
 setupTheme();
 fetchData();
@@ -60,25 +60,45 @@ async function fetchData() {
 
 function setupFilters() {
     const engFilter = document.getElementById('engineerFilter');
+    const modelEngFilter = document.getElementById('modelEngineerFilter'); // ดึง Element ใหม่มาเตรียมไว้
     const searchInput = document.getElementById('searchInput');
     const hideSwitch = document.getElementById('hideCompletedSwitch');
     
     if (!engFilter || !searchInput || !hideSwitch) return;
 
+    // ดึงรายชื่อวิศวกรที่ไม่ซ้ำกันออกมา
     const engineers = [...new Set(allData.map(item => item.engineer))].filter(e => e).sort();
+
+    // 1. ล้างค่าและตั้งค่าเริ่มต้นให้ทั้ง 2 Dropdown
     engFilter.innerHTML = '<option value="">--แสดงทั้งหมด--</option>';
+    if (modelEngFilter) {
+        modelEngFilter.innerHTML = '<option value="">-- แสดงช่างทุกคน --</option>';
+    }
+
+    // 2. ใช้ Loop เดียวกันสร้าง Option ให้ทั้งคู่
     engineers.forEach(eng => {
-        const opt = document.createElement('option');
-        opt.value = eng;
-        opt.textContent = eng;
-        engFilter.appendChild(opt);
+        // สร้าง Option สำหรับหน้าหลัก
+        const opt1 = document.createElement('option');
+        opt1.value = eng;
+        opt1.textContent = eng;
+        engFilter.appendChild(opt1);
+
+        // สร้าง Option สำหรับใน Modal (ถ้ามี Element อยู่จริง)
+        if (modelEngFilter) {
+            const opt2 = document.createElement('option');
+            opt2.value = eng;
+            opt2.textContent = eng;
+            modelEngFilter.appendChild(opt2);
+        }
     });
 
+    // 3. เพิ่ม Event Listeners
     engFilter.addEventListener('change', filterAndRender);
     searchInput.addEventListener('input', filterAndRender);
     hideSwitch.addEventListener('change', filterAndRender);
-}
 
+
+    
 function filterAndRender() {
     const selectedEngineer = document.getElementById('engineerFilter').value;
     const searchText = document.getElementById('searchInput').value.toLowerCase();
@@ -276,3 +296,50 @@ function calculateAndRenderStats() {
         }
     });
 }
+
+// --- 3. Model Bar Chart (เพิ่มใหม่) ---
+    const modelFilterValue = document.getElementById('modelEngineerFilter')?.value || "";
+    const modelStats = {};
+    
+    // กรองข้อมูลตามช่างที่เลือกใน Modal
+    const filteredForModel = allData.filter(d => modelFilterValue === "" || d.engineer === modelFilterValue);
+    
+    filteredForModel.forEach(d => {
+        const model = d.model || 'Unknown';
+        if (!modelStats[model]) modelStats[model] = { completed: 0, remaining: 0 };
+        
+        if (d.windows && d.windows !== "" && d.windows !== null && d.windows !== "-- เลือก --") {
+            modelStats[model].completed++;
+        } else {
+            modelStats[model].remaining++;
+        }
+    });
+
+    const modelLabels = Object.keys(modelStats).sort();
+    const modelCompletedData = modelLabels.map(m => modelStats[m].completed);
+    const modelRemainingData = modelLabels.map(m => modelStats[m].remaining);
+
+    const modelCtx = document.getElementById('modelBarChart').getContext('2d');
+    if (myModelChart) myModelChart.destroy();
+    myModelChart = new Chart(modelCtx, {
+        type: 'bar',
+        data: {
+            labels: modelLabels,
+            datasets: [
+                { label: 'สำเร็จ', data: modelCompletedData, backgroundColor: '#198754' },
+                { label: 'รอดำเนินการ', data: modelRemainingData, backgroundColor: '#adb5bd' }
+            ]
+        },
+        options: {
+            indexAxis: 'y', // กราฟแนวนอนทำให้อ่านชื่อรุ่นง่ายขึ้น
+            responsive: true,
+            maintainAspectRatio: false,
+            scales: {
+                x: { stacked: true, ticks: { color: chartTextColor }, grid: { color: gridColor } },
+                y: { stacked: true, ticks: { color: chartTextColor }, grid: { display: false } }
+            },
+            plugins: {
+                legend: { position: 'bottom', labels: { color: chartTextColor } }
+            }
+        }
+    });
