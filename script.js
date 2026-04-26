@@ -1,6 +1,7 @@
 const WEB_APP_URL = 'https://script.google.com/macros/s/AKfycbzB4T_V7URSfkk9EuQNk1JCU1G3VOsc7SD60opd_7_D7zLgrelr3Rih69BIb9LR_oJN/exec';
 let allData = [];
 let windowsOptions = [];
+let myPieChart, myBarChart;
 
 setupTheme();
 fetchData();
@@ -45,6 +46,7 @@ async function fetchData() {
         
         setupFilters();
         filterAndRender(); 
+        calculateAndRenderStats();
         
         if (status) status.innerHTML = '';
     } catch (error) {
@@ -168,4 +170,116 @@ async function updateWindows(rowNumber, selectElement) {
             selectElement.style.borderColor = "";
         }, 2000);
     }
+}
+
+function calculateAndRenderStats() {
+    // 1. คำนวณภาพรวมโปรเจกต์ (Pie Chart)
+    const totalItems = allData.length;
+    // ตรวจสอบว่าช่อง Windows ว่างหรือยังไม่ได้เลือกหรือไม่ (อิงตาม logic ของ toggle)
+    const completedItems = allData.filter(d => 
+        d.windows && d.windows !== "" && d.windows !== null && d.windows !== "-- เลือก --"
+    ).length;
+    const remainingItems = totalItems - completedItems;
+    const completionPercentage = ((completedItems / totalItems) * 100).toFixed(1);
+
+    // 2. คำนวณสถิติรายช่าง (Bar Chart)
+    const engineerStats = {};
+    allData.forEach(d => {
+        const eng = d.engineer || 'ไม่ระบุ';
+        if (!engineerStats[eng]) {
+            engineerStats[eng] = { total: 0, completed: 0 };
+        }
+        engineerStats[eng].total++;
+        if (d.windows && d.windows !== "" && d.windows !== null && d.windows !== "-- เลือก --") {
+            engineerStats[eng].completed++;
+        }
+    });
+
+    const engLabels = Object.keys(engineerStats).sort(); // เรียงชื่อช่าง
+    const engTotalData = engLabels.map(eng => engineerStats[eng].total);
+    const engCompletedData = engLabels.map(eng => engineerStats[eng].completed);
+
+    // 3. วาดกราฟ Pie Chart (ความคืบหน้าภาพรวม)
+    const pieCtx = document.getElementById('progressPieChart').getContext('2d');
+    
+    // ตรวจสอบ Theme เพื่อปรับสีตัวหนังสือ
+    const currentTheme = document.body.className;
+    Chart.defaults.color = currentTheme === 'dark-mode' ? 'white' : 'black';
+
+    if (myPieChart) myPieChart.destroy(); // ถ้ามีกราฟเก่าให้ลบก่อน
+    myPieChart = new Chart(pieCtx, {
+        type: 'pie', // หรือใช้ 'doughnut' จะดูทันสมัยกว่า
+        data: {
+            labels: ['สำเร็จ', 'รอดำเนินการ'],
+            datasets: [{
+                data: [completedItems, remainingItems],
+                backgroundColor: ['#198754', '#adb5bd'], // เขียว / เทา
+                borderWidth: 1,
+                borderColor: currentTheme === 'dark-mode' ? '#1e1e1e' : '#fff'
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: { position: 'bottom' },
+                // เพิ่มปลั๊กอินเพื่อแสดงเปอร์เซ็นต์กลางกราฟ
+                tooltip: {
+                    callbacks: {
+                        label: function(context) {
+                            return ` ${context.label}: ${context.raw} เครื่อง (${completionPercentage}%)`;
+                        }
+                    }
+                }
+            }
+        }
+    });
+
+    // 4. วาดกราฟ Bar Chart (ผลงานรายบุคคล)
+    const barCtx = document.getElementById('engineerBarChart').getContext('2d');
+    
+    if (myBarChart) myBarChart.destroy();
+    myBarChart = new Chart(barCtx, {
+        type: 'bar',
+        data: {
+            labels: engLabels,
+            datasets: [{
+                label: 'เครื่องที่สำเร็จ',
+                data: engCompletedData,
+                backgroundColor: '#198754', // สีเขียว
+                borderRadius: 5
+            }, {
+                label: 'เครื่องที่ต้องทำ',
+                data: engTotalData,
+                backgroundColor: '#adb5bd', // สีเทา
+                borderRadius: 5
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    ticks: {
+                        stepSize: 1 // ให้แสดงตัวเลขเป็นจำนวนเต็ม (1, 2, 3...)
+                    }
+                },
+                x: {
+                    ticks: {
+                        autoSkip: false, // บังคับแสดงชื่อช่างทุกคน
+                        maxRotation: 45, // หมุนชื่อช่างถ้ามันยาว
+                        minRotation: 0
+                    }
+                }
+            },
+            plugins: {
+                legend: { position: 'bottom' },
+                tooltip: {
+                    mode: 'index', // ให้ tooltip แสดงข้อมูลของทั้ง 2 dataset พร้อมกัน
+                    intersect: false
+                }
+            }
+        }
+    });
 }
