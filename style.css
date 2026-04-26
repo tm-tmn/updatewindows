@@ -1,245 +1,164 @@
 /* =========================================
-   1. VARIABLES & CORE THEMES
+   1. VARIABLES & TECH PALETTE
    ========================================= */
 :root {
-    --accent-color: #0d6efd;
+    --accent-primary: #4361ee;
+    --accent-secondary: #3f37c9;
+    --status-success: #4cc9f0;
+    --status-danger: #f72585;
+    --status-warning: #ff9f1c;
+    --icon-dashboard: #4361ee;
+    --icon-theme: #f8961e;
+    --icon-add: #2ec4b6;
     --transition-speed: 0.3s;
 }
 
 body.light-mode {
-    --bg-body: #f8f9fa;
-    --bg-card: #ffffff;
-    --text-main: #1a1c23;
-    --text-muted: #636e72;
-    --border-color: #e0e0e0;
-    --shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+    --bg-body: #f0f2f5;
+    --bg-card: rgba(255, 255, 255, 0.9);
+    --bg-inner: #ffffff;
+    --text-main: #2b2d42;
+    --text-muted: #8d99ae;
+    --border-color: #dee2e6;
+    --shadow: 0 8px 24px rgba(149, 157, 165, 0.2);
+    --card-accent: linear-gradient(135deg, #4361ee, #4cc9f0);
 }
 
 body.dark-mode {
-    --bg-body: #121212;
-    --bg-card: #1e1e1e;
-    --text-main: #f8f9fa;   
-    --text-muted: #a0a0a0;  
-    --border-color: #333333;
-    --shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+    --bg-body: #0b0e14;
+    --bg-card: #1a1f2c;
+    --bg-inner: #242b3d;
+    --text-main: #edf2f4;
+    --text-muted: #94a3b8;
+    --border-color: #334155;
+    --shadow: 0 0 20px rgba(67, 97, 238, 0.15);
+    --card-accent: linear-gradient(135deg, #3f37c9, #f72585);
 }
 
 /* =========================================
-   2. GLOBAL STYLES
+   2. GLOBAL STYLES & TYPOGRAPHY
    ========================================= */
 body {
     background-color: var(--bg-body) !important;
     color: var(--text-main) !important;
     font-family: 'Inter', -apple-system, sans-serif;
-    transition: background-color var(--transition-speed), color var(--transition-speed);
-    min-height: 100vh;
+    transition: all var(--transition-speed);
 }
 
 h2 { 
-    color: var(--text-main) !important; 
+    background: linear-gradient(to right, var(--accent-primary), var(--status-danger));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
     font-weight: 800;
-    text-align: center;
-    margin-top: 2.5rem;
-    margin-bottom: 2rem;
-    letter-spacing: -0.02em;
+    margin: 2.5rem 0;
+    filter: drop-shadow(0 2px 4px rgba(0,0,0,0.1));
 }
 
-.border-top { border-color: var(--border-color) !important; opacity: 1; }
-
 /* =========================================
-   3. BUTTONS & INPUTS
+   3. BUTTONS & COLORED ICONS
    ========================================= */
 .btn-icon {
-    width: 42px;
-    height: 42px;
-    border-radius: 12px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 1.1rem;
-    transition: all 0.2s ease;
-    border: 1px solid var(--border-color) !important;
+    width: 46px;
+    height: 46px;
+    border-radius: 14px;
+    border: 2px solid var(--border-color) !important;
     background: var(--bg-card) !important;
-    color: var(--text-main) !important;
+    box-shadow: var(--shadow);
 }
+
+/* สีไอคอนแยกตามประเภท */
+.btn-dashboard i { color: var(--icon-dashboard); text-shadow: 0 0 10px rgba(67, 97, 238, 0.3); }
+.btn-theme i { color: var(--icon-theme); text-shadow: 0 0 10px rgba(248, 150, 30, 0.3); }
+.btn-add i { color: var(--icon-add); text-shadow: 0 0 10px rgba(46, 196, 182, 0.3); }
 
 .btn-icon:hover {
-    transform: translateY(-2px);
-    box-shadow: var(--shadow) !important;
+    transform: translateY(-3px) scale(1.05);
+    border-color: var(--accent-primary) !important;
 }
 
-/* เฉพาะปุ่มบวก และปุ่ม Theme */
-.btn-add:hover { color: var(--accent-color) !important; }
-.btn-dashboard { color: var(--accent-color); }
-.btn-theme { color: var(--text-main); }
-
-/* ปรับปรุงปุ่มบันทึกหลัก */
-.btn-primary.w-100.rounded-pill {
-    background: linear-gradient(135deg, #0d6efd, #0052cc);
+.btn-primary.rounded-pill {
+    background: var(--card-accent) !important;
     border: none;
-    padding: 0.8rem;
-    font-weight: 600;
-    letter-spacing: 0.5px;
-    transition: all 0.3s ease;
-}
-
-.btn-primary.w-100.rounded-pill:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 4px 15px rgba(13, 110, 253, 0.3);
-}
-
-/* Forms */
-.form-control, .form-select {
-    background-color: var(--bg-card) !important;
-    color: var(--text-main) !important;
-    border: 1px solid var(--border-color) !important;
-    border-radius: 10px;
-}
-
-body.dark-mode .form-control { background-color: #2b2b2b !important; }
-
-body.dark-mode .form-select {
-    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3e%3cpath fill='none' stroke='%23f8f9fa' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='m2 5 6 6 6-6'/%3e%3c/svg%3e");
+    box-shadow: 0 4px 15px rgba(67, 97, 238, 0.4);
 }
 
 /* =========================================
-   4. CARDS & LAYOUT
+   4. ENHANCED CARDS (Vibrant Style)
    ========================================= */
 .filter-card {
-    max-width: 850px;
-    margin: 0 auto 3rem auto;
-    background-color: var(--bg-card) !important;
-    border: 1px solid var(--border-color) !important;
-    box-shadow: var(--shadow);
-    border-radius: 24px !important;
-    padding: 2rem !important;
+    border-top: 5px solid var(--accent-primary) !important;
+    background: var(--bg-card) !important;
+    backdrop-filter: blur(10px);
+    border-radius: 20px !important;
 }
 
 .device-card {
-    background-color: var(--bg-card) !important;
-    border: 1px solid var(--border-color) !important;
-    box-shadow: var(--shadow);
-    border-radius: 18px;
-    padding: 1.5rem !important;
-    transition: transform 0.2s ease;
-    color: var(--text-main) !important;
-    height: 100%;
-}
-
-.device-card:hover { transform: translateY(-4px); }
-
-/* =========================================
-   5. MODALS (Manage Windows & Charts)
-   ========================================= */
-/* พื้นหลังหลักของ Modal ทุกส่วน */
-.modal-content, 
-.modal-header, 
-.modal-body, 
-.modal-footer {
-    background-color: var(--bg-card) !important;
-    color: var(--text-main) !important;
-    border-color: var(--border-color) !important;
-}
-
-/* บังคับสีตัวอักษรหัวข้อและ Label */
-.modal-header .modal-title, 
-.modal-body h6, 
-.modal-body label {
-    color: var(--text-main) !important;
-}
-
-/* จัดการส่วนที่มีคลาส bg-light (พื้นที่ส่วนเพิ่มเวอร์ชันใหม่) และ bg-white */
-#manageWindowsModal .bg-light,
-#manageWindowsModal .bg-white,
-#currentWindowsList .bg-light,
-#currentWindowsList .bg-white,
-.modal-content .card.bg-light-subtle {
-    background-color: var(--bg-body) !important;
-    border: 1px solid var(--border-color) !important;
-    color: var(--text-main) !important;
-    transition: background-color var(--transition-speed);
-}
-
-/* ปรับแต่งปุ่ม Close */
-body.dark-mode .btn-close {
-    filter: invert(1) grayscale(100%) brightness(200%);
-}
-
-/* ปุ่มแก้ไข/ลบ ในรายการ */
-#currentWindowsList .btn-outline-primary { 
-    color: var(--accent-color); 
-    border-color: var(--accent-color); 
-}
-#currentWindowsList .btn-outline-danger { 
-    color: #dc3545; 
-    border-color: #dc3545; 
-}
-body.dark-mode #currentWindowsList .btn:hover { 
-    color: #fff !important; 
-}
-
-/* รายการปุ่มเวอร์ชันที่แสดงเป็น Badge (ถ้ามี) */
-body.dark-mode #currentWindowsList .badge {
-    border: 1px solid var(--border-color);
-}
-
-/* Charts & Dashboard Progress */
-#dashboardModal .modal-dialog { 
-    max-width: 900px; 
-}
-
-.chart-container {
-    position: relative;
-    margin: auto;
-    padding: 15px;
-    background: var(--bg-body);
+    background: var(--bg-card) !important;
+    border-left: 4px solid var(--accent-primary) !important; /* เพิ่มแถบสีด้านข้าง */
     border-radius: 16px;
-    border: 1px solid var(--border-color);
+    transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
 }
 
-#dashboardModalLabel {
-    font-weight: 700;
-    background: linear-gradient(45deg, var(--accent-color), #6e8efb);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
+/* สลับสีแถบข้างตามรุ่น (ตัวอย่าง) */
+.device-item:nth-child(odd) .device-card { border-left-color: var(--status-success) !important; }
+.device-item:nth-child(even) .device-card { border-left-color: var(--status-danger) !important; }
+
+.device-card:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 12px 30px rgba(67, 97, 238, 0.2);
+    background: var(--bg-inner) !important;
 }
-
-/* ปรับสีข้อความแจ้งเตือนสีแดง/น้ำเงิน ใน Modal ให้ซอฟต์ลงเมื่อเป็น Dark Mode */
-body.dark-mode .modal-body .text-primary { color: #4dabf7 !important; }
-body.dark-mode .modal-body .text-danger { color: #ff8787 !important; }
-
 
 /* =========================================
-   6. MISC & ANIMATIONS
+   5. MODALS & FORMS (Neon Dark Mode)
    ========================================= */
-#itemCount, .model-badge {
-    background: linear-gradient(135deg, #6e8efb, #4a6cf7);
-    color: white !important;
-    padding: 4px 12px;
-    border-radius: 50px;
-    font-weight: 700;
+.modal-content {
+    border-radius: 24px;
+    overflow: hidden;
+    border: 1px solid var(--accent-primary) !important;
 }
 
-#itemCount { font-size: 0.85rem; }
-.model-badge { font-size: 0.7rem; }
-
-.customer-title { font-size: 1.1rem; font-weight: 700; color: var(--text-main) !important; }
-.sn-text, .text-muted, .small { color: var(--text-muted) !important; }
-
-@keyframes fadeIn {
-    from { opacity: 0; transform: translateY(10px); }
-    to { opacity: 1; transform: translateY(0); }
+/* ปรับสีพื้นที่ "เพิ่มเวอร์ชันใหม่" ให้มีสีสัน */
+#manageWindowsModal .bg-light {
+    background: linear-gradient(145deg, var(--bg-inner), var(--bg-body)) !important;
+    border: 1px dashed var(--accent-primary) !important;
 }
-.device-item { animation: fadeIn 0.4s ease-out forwards; }
 
-/* Scrollbar */
-#currentWindowsList::-webkit-scrollbar { width: 6px; }
-#currentWindowsList::-webkit-scrollbar-track { background: var(--bg-body); }
-#currentWindowsList::-webkit-scrollbar-thumb { background: var(--border-color); border-radius: 10px; }
+/* Input Fields */
+.form-control:focus {
+    border-color: var(--accent-primary) !important;
+    box-shadow: 0 0 0 4px rgba(67, 97, 238, 0.2) !important;
+}
 
-/* Media Queries */
-@media (max-width: 768px) {
-    .customer-title { font-size: 1rem; }
-    .device-card { padding: 1rem !important; }
-    .filter-card { padding: 1.25rem !important; margin: 0 10px 2rem 10px; }
+/* List Items ใน Modal */
+#currentWindowsList .bg-white {
+    border-right: 4px solid var(--icon-add) !important;
+    background: var(--bg-inner) !important;
+}
+
+/* =========================================
+   6. BADGES & DASHBOARD
+   ========================================= */
+#itemCount {
+    background: var(--card-accent) !important;
+    box-shadow: 0 0 15px rgba(67, 97, 238, 0.4);
+}
+
+.model-badge {
+    background: #2b2d42; /* สีเข้มตัดกับการ์ด */
+    color: #4cc9f0 !important;
+    border: 1px solid #4cc9f0;
+}
+
+.customer-title { color: var(--accent-primary) !important; }
+
+/* Icon เล็กๆ ในการ์ด */
+.bi-geo-alt-fill { color: var(--status-danger); }
+.bi-cpu-fill { color: var(--status-success); }
+.bi-person-badge { color: var(--status-warning); }
+
+/* Custom Scrollbar */
+::-webkit-scrollbar-thumb {
+    background: var(--accent-primary);
+    border-radius: 10px;
 }
