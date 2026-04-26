@@ -13,12 +13,16 @@
     <div class="container py-4">
         
         <div class="row align-items-center mb-4 header-section g-0">
-            <div class="col-2"></div>
-
+            <div class="col-2 d-flex justify-content-start">
+                <button id="addWindowsToggle" class="btn btn-icon btn-add shadow-sm" data-bs-toggle="modal" data-bs-target="#manageWindowsModal">
+                    <i class="bi bi-plus-lg"></i>
+                </button>
+            </div>
+        
             <div class="col-8 text-center">
                 <h2 class="m-0">Update Windows</h2>
             </div>
-
+        
             <div class="col-2 d-flex justify-content-end gap-2 pr-0">
                 <button id="dashboardToggle" class="btn btn-icon btn-dashboard shadow-sm" data-bs-toggle="modal" data-bs-target="#dashboardModal">
                     <i class="bi bi-bar-chart-line-fill"></i>
@@ -112,6 +116,38 @@
                         </div>
                     </div>
                 </div>
+
+                <div class="modal fade" id="manageWindowsModal" tabindex="-1" aria-hidden="true">
+                    <div class="modal-dialog modal-dialog-centered">
+                        <div class="modal-content border-0 rounded-4 shadow-lg">
+                            <div class="modal-header border-bottom-0">
+                                <h5 class="modal-title fw-bold"><i class="bi bi-gear-fill me-2"></i>Manage Windows Versions</h5>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                            </div>
+                            <div class="modal-body p-4">
+                                <div class="mb-4">
+                                    <label class="form-label small fw-bold">Current Versions:</label>
+                                    <div id="currentWindowsList" class="d-flex flex-wrap gap-2 mb-3">
+                                        </div>
+                                </div>
+                                <hr>
+                                <div class="bg-light p-3 rounded-3">
+                                    <h6 class="small fw-bold mb-3 text-primary">เพิ่มเวอร์ชันใหม่</h6>
+                                    <div class="mb-3">
+                                        <input type="text" id="newWindowsInput" class="form-control" placeholder="ระบุเวอร์ชัน เช่น Windows 11 Pro 23H2">
+                                    </div>
+                                    <div class="mb-3">
+                                        <label class="form-label small fw-bold text-danger">รหัสยืนยัน (Admin Only):</label>
+                                        <input type="password" id="adminPasswordInput" class="form-control" placeholder="DDMMYYYY">
+                                        <div class="form-text text-muted" style="font-size: 0.7rem;">รหัสคือ วันที่ปัจจุบัน (เช่น 26042026)</div>
+                                    </div>
+                                    <button type="button" class="btn btn-primary w-100 rounded-pill fw-bold" onclick="addNewWindowsVersion()">บันทึกข้อมูล</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            
             </div>
         </div>
     </div>
