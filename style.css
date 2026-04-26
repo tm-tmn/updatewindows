@@ -20,13 +20,13 @@ body.light-mode {
     --bg-inner: #fefeff;
     --text-main: #5c677d;
     --text-muted: #9ba1b0;
-    --border-color: #e2e8f0;        /* เข้มขึ้นเล็กน้อยให้เห็นขอบชัด */
+    --border-color: #e2e8f0;
     --shadow: 0 10px 25px rgba(162, 210, 255, 0.15);
     --card-accent: linear-gradient(135deg, #a2d2ff, #ffafcc);
 }
 
 body.dark-mode {
-    --bg-body: #0f1115;             /* เข้มขึ้นเพื่อให้พาสเทลลอยเด่น */
+    --bg-body: #0f1115;             /* พื้นหลังเข้มสนิทเพื่อให้พาสเทลลอยเด่น */
     --bg-card: #1a1d23;
     --bg-inner: #242831;
     --text-main: #e2e8f0;           
@@ -34,44 +34,6 @@ body.dark-mode {
     --border-color: #334155;
     --shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
     --card-accent: linear-gradient(135deg, #495d7a, #8e94f2);
-}
-
-/* =========================================
-   FIX MODAL & CARDS IN DARK MODE
-   ========================================= */
-
-/* คุมพื้นหลังของการ์ดใน Modal (ที่ใช้ bg-light-subtle) */
-.bg-light-subtle {
-    background-color: var(--bg-inner) !important; /* ใช้สี inner ของ theme เรา */
-    transition: background-color var(--transition-speed) ease;
-}
-
-/* คุมสีตัวหนังสือใน Modal ให้ชัดเจน */
-.modal-content .fw-bold, 
-.modal-content h5, 
-.modal-content h6 {
-    color: var(--text-main) !important;
-}
-
-/* ปรับสี Select Filter ใน Modal */
-#modelEngineerFilter {
-    background-color: var(--bg-card) !important;
-    color: var(--text-main) !important;
-    border: 1px solid var(--border-color) !important;
-}
-
-/* แก้ไขสีพื้นหลัง Modal Body ให้มืดลงใน Dark Mode */
-body.dark-mode .modal-content {
-    background-color: var(--bg-card) !important;
-}
-
-body.dark-mode .modal-header {
-    border-bottom: 1px solid var(--border-color) !important;
-}
-
-/* ปรับสีของ Canvas/Chart ให้ดูนุ่มนวลขึ้นในโหมดมืด */
-body.dark-mode canvas {
-    filter: drop-shadow(0 0 5px rgba(162, 210, 255, 0.1));
 }
 
 /* =========================================
@@ -108,7 +70,7 @@ h2 {
     box-shadow: 0 15px 30px rgba(162, 210, 255, 0.25);
 }
 
-/* ปรับสีปุ่มบันทึกเป็นเขียวที่ชัดเจนขึ้น */
+/* ปุ่มบันทึกเป็นสีเขียว Mint ชัดเจนตามสั่ง */
 .btn-primary.rounded-pill, 
 button[onclick*="addNewWindowsVersion"], 
 button[onclick*="save"] {
@@ -137,7 +99,7 @@ button[onclick*="save"] {
     transition: all 0.3s ease;
 }
 
-/* Border-Top Pastel */
+/* Border-Top Pastel สำหรับการ์ดหน้าหลัก */
 .device-item:nth-child(4n+1) .device-card { border-top: 5px solid var(--accent-primary) !important; }
 .device-item:nth-child(4n+2) .device-card { border-top: 5px solid var(--status-danger) !important; }
 .device-item:nth-child(4n+3) .device-card { border-top: 5px solid var(--status-success) !important; }
@@ -146,29 +108,45 @@ button[onclick*="save"] {
 .device-card:hover { transform: translateY(-6px); border-color: var(--accent-primary) !important; }
 
 /* =========================================
-   5. MODALS (Fixed Dark Mode & Contrast)
+   5. MODALS & BOOTSTRAP OVERRIDES (FIX DARK MODE)
    ========================================= */
+/* บังคับพื้นหลัง Modal ให้เปลี่ยนตามโหมด */
 .modal-content {
     background-color: var(--bg-card) !important;
     color: var(--text-main) !important;
     border-radius: 30px;
     border: 1px solid var(--border-color) !important;
+    box-shadow: var(--shadow);
+}
+
+/* แก้ไขปัญหา bg-light-subtle ใน Modal หน้า Dashboard กลายเป็นสีขาว */
+.bg-light-subtle {
+    background-color: var(--bg-inner) !important; 
+    color: var(--text-main) !important;
+    border: 1px solid var(--border-color) !important;
+    border-radius: 16px !important;
+    transition: background-color var(--transition-speed) ease;
 }
 
 .modal-header, .modal-footer { border-color: var(--border-color) !important; }
 
-/* พื้นที่เพิ่มเวอร์ชันใหม่ - แก้ไขเรื่องขอบหาย */
+/* คุมสีหัวข้อใน Modal ทั้งหมด */
+.modal-content h5, .modal-content h6, .modal-content .fw-bold {
+    color: var(--text-main) !important;
+}
+
+/* พื้นที่เพิ่มเวอร์ชันใหม่ - ขอบเส้นประสีฟ้าพาสเทล */
 #manageWindowsModal .bg-light, .add-version-section {
     background: var(--bg-body) !important;
-    border: 2px dashed var(--accent-primary) !important; /* ขอบชัดเจนขึ้น */
+    border: 2px dashed var(--accent-primary) !important; 
     border-radius: 20px;
     padding: 20px !important;
 }
 
-/* แก้ไขขอบของ Input ในส่วนเพิ่มเวอร์ชัน */
-#manageWindowsModal .form-control {
+/* แก้ไขขอบของ Input ในโหมดสว่าง */
+.form-control, .form-select {
     background-color: var(--bg-card) !important;
-    border: 1px solid var(--border-color) !important; /* ให้เห็นขอบชัดเจนใน Light Mode */
+    border: 1px solid var(--border-color) !important; 
     color: var(--text-main) !important;
 }
 
@@ -191,13 +169,21 @@ button[onclick*="save"] {
     box-shadow: var(--shadow);
 }
 
-/* ปรับแต่ง Label ใน Chart Modal */
+/* สีพื้นหลังของ Modal Body ในหน้า Dashboard */
 #dashboardModal .modal-body {
     background-color: var(--bg-body) !important;
 }
 
-body.dark-mode #dashboardModal .modal-content {
-    background-color: #12141a !important; /* เข้มพิเศษสำหรับหน้าสถิติ */
+/* ปรับสี Select Filter ในหน้าสรุปผล */
+#modelEngineerFilter {
+    background-color: var(--bg-card) !important;
+    color: var(--text-main) !important;
+    border: 1px solid var(--border-color) !important;
+}
+
+/* กราฟในโหมดมืด (เพิ่ม Glow อ่อนๆ) */
+body.dark-mode canvas {
+    filter: drop-shadow(0 0 5px rgba(162, 210, 255, 0.15));
 }
 
 /* =========================================
@@ -216,9 +202,10 @@ body.dark-mode .model-badge { background: #334155; color: var(--accent-primary) 
 .customer-title { color: var(--text-main) !important; font-weight: 700; }
 .text-muted, .small { color: var(--text-muted) !important; }
 
-/* Close Button */
+/* ปุ่มกากบาท Close ในโหมดมืด */
 body.dark-mode .btn-close { filter: invert(1) brightness(2); }
 
-/* Scrollbar */
+/* Scrollbar พาสเทล */
 ::-webkit-scrollbar { width: 8px; }
+::-webkit-scrollbar-track { background: var(--bg-body); }
 ::-webkit-scrollbar-thumb { background: var(--accent-secondary); border-radius: 10px; }
