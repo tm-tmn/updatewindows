@@ -257,19 +257,24 @@ async function deleteWindowsVersion(index) {
         text: `คุณต้องการลบ "${windowsOptions[index]}"?`,
         icon: 'warning',
         showCancelButton: true,
-        confirmButtonText: 'ใช่, ลบเลย!'
+        confirmButtonText: 'ใช่, ลบเลย!',
+        cancelButtonText: 'ยกเลิก'
     });
 
     if (result.isConfirmed) {
-        Swal.fire({ title: 'กำลังลบ...', allowOutsideClick: false, didOpen: () => Swal.showLoading() });
+        // ลบบรรทัด Swal.fire({ title: 'กำลังลบ...' }) ที่นี่ออกไปเลยครับ
+        // เพราะเราจะไปใช้ Loading ตัวเดียวที่อยู่ใน updateListOnServer
         
         const success = await updateListOnServer('deleteWindowsVersion', { index: index });
         
         if (success) {
-            // หน่วงเวลาเล็กน้อยเพื่อให้คนดูทัน
-            setTimeout(() => {
-                Swal.fire({ icon: 'success', title: 'ลบเรียบร้อย', timer: 1500, showConfirmButton: false });
-            }, 300);
+            // โชว์ความสำเร็จหลังจากฟังก์ชันกลางทำงานเสร็จและปิดตัวเองไปแล้ว
+            Swal.fire({ 
+                icon: 'success', 
+                title: 'ลบเรียบร้อย', 
+                timer: 1500, 
+                showConfirmButton: false 
+            });
         }
     }
 }
