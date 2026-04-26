@@ -295,7 +295,6 @@ function calculateAndRenderStats() {
             }
         }
     });
-}
 
 // --- 3. Model Bar Chart (เพิ่มใหม่) ---
     const modelFilterValue = document.getElementById('modelEngineerFilter')?.value || "";
@@ -343,3 +342,4 @@ function calculateAndRenderStats() {
             }
         }
     });
+}
