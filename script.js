@@ -279,23 +279,34 @@ async function updateListOnServer(action, payload) {
     const now = new Date();
     const correctPass = `${String(now.getDate()).padStart(2, '0')}${String(now.getMonth() + 1).padStart(2, '0')}${now.getFullYear()}`;
 
+    // 1. ตรวจสอบรหัสผ่านก่อนทำอย่างอื่น
     if (passInput !== correctPass) {
-        Swal.fire('ผิดพลาด', 'รหัสผ่าน Admin ไม่ถูกต้อง', 'error');
-        // เคลียร์รหัสผ่านทันทีถ้าใส่ผิด
-        passField.value = ''; 
+        passField.value = ''; // เคลียร์ทันทีที่ผิด
+        // ใช้ await เพื่อให้มั่นใจว่า Swal ผิดพลาดแสดงผลเสร็จก่อนจะทำอย่างอื่น
+        await Swal.fire({
+            icon: 'error',
+            title: 'ผิดพลาด',
+            text: 'รหัสผ่าน Admin ไม่ถูกต้อง',
+            confirmButtonText: 'ตกลง'
+        });
         return false;
     }
 
     try {
+        // 2. ถ้าผ่าน ให้แสดง Loading เฉพาะตอนจะเริ่ม Fetch
+        Swal.fire({
+            title: 'กำลังดำเนินการ...',
+            allowOutsideClick: false,
+            didOpen: () => { Swal.showLoading(); }
+        });
+
         await fetch(WEB_APP_URL, {
             method: 'POST',
             mode: 'no-cors',
             body: JSON.stringify({ action: action, ...payload })
         });
         
-        // เคลียร์รหัสผ่านหลังจากส่งข้อมูลสำเร็จ
-        passField.value = '';
-
+        // 3. จัดการข้อมูลใน Local
         if (action === 'deleteWindowsVersion') {
             windowsOptions.splice(payload.index, 1);
         } else if (action === 'editWindowsVersion') {
@@ -305,15 +316,18 @@ async function updateListOnServer(action, payload) {
             windowsOptions.sort();
         }
         
+        passField.value = ''; // เคลียร์รหัสผ่านเมื่อสำเร็จ
         renderCurrentWindows();
         filterAndRender(); 
-        
-        // บังคับให้ Swal ตัวเก่าปิดไปก่อนเพื่อให้ตัวใหม่ขึ้นมาได้
+
+        // 4. ปิด Loading ก่อนส่งค่ากลับ
         Swal.close(); 
         return true;
+
     } catch (e) {
-        passField.value = ''; // เคลียร์รหัสผ่านแม้เกิดข้อผิดพลาด
-        Swal.fire('ผิดพลาด', 'ไม่สามารถเชื่อมต่อได้', 'error');
+        console.error(e);
+        passField.value = '';
+        await Swal.fire('ผิดพลาด', 'ไม่สามารถเชื่อมต่อเซิร์ฟเวอร์ได้', 'error');
         return false;
     }
 }
