@@ -209,3 +209,52 @@ body.dark-mode .btn-close { filter: invert(1) brightness(2); }
 ::-webkit-scrollbar { width: 8px; }
 ::-webkit-scrollbar-track { background: var(--bg-body); }
 ::-webkit-scrollbar-thumb { background: var(--accent-secondary); border-radius: 10px; }
+
+/* =========================================
+   8. SWEETALERT2 PASTEL DARK FIX
+   ========================================= */
+
+/* ปรับแต่งหน้าต่าง swal เมื่ออยู่ใน body.dark-mode */
+body.dark-mode .swal2-popup {
+    background-color: var(--bg-card) !important;
+    color: var(--text-main) !important;
+    border: 1px solid var(--border-color) !important;
+    box-shadow: var(--shadow) !important;
+    border-radius: 25px !important;
+}
+
+/* ปรับสีหัวข้อและข้อความ */
+body.dark-mode .swal2-title,
+body.dark-mode .swal2-html-container,
+body.dark-mode .swal2-content {
+    color: var(--text-main) !important;
+}
+
+/* ปรับสีปุ่มใน swal ให้เข้ากับโทนพาสเทล */
+body.dark-mode .swal2-confirm {
+    background-color: var(--btn-save) !important; /* สีเขียวมิ้นต์ที่เราเซตไว้ */
+    box-shadow: 0 4px 12px rgba(87, 204, 153, 0.3) !important;
+}
+
+body.dark-mode .swal2-cancel {
+    background-color: #4a5568 !important; /* สีเทาเข้มพาสเทล */
+}
+
+/* ปรับสีไอคอน (Error/Success) ให้นุ่มลง */
+body.dark-mode .swal2-icon.swal2-error {
+    border-color: var(--status-danger) !important;
+    color: var(--status-danger) !important;
+}
+
+body.dark-mode .swal2-icon.swal2-success {
+    border-color: var(--status-success) !important;
+    color: var(--status-success) !important;
+}
+
+body.dark-mode .swal2-icon.swal2-success [class^=swal2-success-line] {
+    background-color: var(--status-success) !important;
+}
+
+body.dark-mode .swal2-icon.swal2-success .swal2-success-ring {
+    border: .25em solid rgba(185, 251, 192, .3) !important; /* Mint green transparent */
+}
