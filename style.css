@@ -7,6 +7,7 @@
     --status-success: #b9fbc0;      /* Mint Green */
     --status-danger: #ffafcc;       /* Soft Pink */
     --status-warning: #ffdec7;      /* Peach */
+    --btn-save: #57cc99;            /* Green Solid for Save Button */
     --icon-dashboard: #8e94f2;
     --icon-theme: #ffb7b2;
     --icon-add: #98ddca;
@@ -19,19 +20,19 @@ body.light-mode {
     --bg-inner: #fefeff;
     --text-main: #5c677d;
     --text-muted: #9ba1b0;
-    --border-color: #f1f3f8;
+    --border-color: #e2e8f0;        /* เข้มขึ้นเล็กน้อยให้เห็นขอบชัด */
     --shadow: 0 10px 25px rgba(162, 210, 255, 0.15);
     --card-accent: linear-gradient(135deg, #a2d2ff, #ffafcc);
 }
 
 body.dark-mode {
-    --bg-body: #1a1c22;
-    --bg-card: #252830;
-    --bg-inner: #2d313a;
-    --text-main: #e0e6ed;
-    --text-muted: #8892b0;
-    --border-color: #363b47;
-    --shadow: 0 10px 30px rgba(0, 0, 0, 0.25);
+    --bg-body: #0f1115;             /* เข้มขึ้นเพื่อให้พาสเทลลอยเด่น */
+    --bg-card: #1a1d23;
+    --bg-inner: #242831;
+    --text-main: #e2e8f0;           
+    --text-muted: #94a3b8;          
+    --border-color: #334155;
+    --shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
     --card-accent: linear-gradient(135deg, #495d7a, #8e94f2);
 }
 
@@ -48,46 +49,41 @@ body {
 h2 { 
     color: var(--text-main) !important;
     font-weight: 700;
-    letter-spacing: -0.01em;
     margin: 2.5rem 0;
-    opacity: 0.9;
 }
 
 /* =========================================
-   3. BUTTONS & PASTEL ICONS
+   3. BUTTONS & ICONS
    ========================================= */
 .btn-icon {
-    width: 46px;
-    height: 46px;
-    border-radius: 15px;
-    border: none !important;
-    background: var(--bg-card) !important;
-    box-shadow: var(--shadow);
+    width: 46px; height: 46px; border-radius: 15px; border: none !important;
+    background: var(--bg-card) !important; box-shadow: var(--shadow);
     transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-/* สีไอคอนโทนพาสเทล */
-.btn-dashboard i { color: #8e94f2; }
-.btn-theme i { color: #ffb7b2; }
-.btn-add i { color: #98ddca; }
+.btn-dashboard i { color: var(--icon-dashboard); }
+.btn-theme i { color: var(--icon-theme); }
+.btn-add i { color: var(--icon-add); }
 
 .btn-icon:hover {
-    transform: translateY(-4px) scale(1.02);
-    background: var(--bg-inner) !important;
+    transform: translateY(-4px);
     box-shadow: 0 15px 30px rgba(162, 210, 255, 0.25);
 }
 
-.btn-primary.rounded-pill {
-    background: var(--card-accent) !important;
-    border: none;
+/* ปรับสีปุ่มบันทึกเป็นเขียวที่ชัดเจนขึ้น */
+.btn-primary.rounded-pill, 
+button[onclick*="addNewWindowsVersion"], 
+button[onclick*="save"] {
+    background: var(--btn-save) !important;
+    border: none !important;
     color: white !important;
     font-weight: 600;
     padding: 0.8rem 1.5rem;
-    box-shadow: 0 8px 20px rgba(162, 210, 255, 0.3);
+    box-shadow: 0 6px 15px rgba(87, 204, 153, 0.3) !important;
 }
 
 /* =========================================
-   4. SOFT CARDS (Pastel Style)
+   4. CARDS & LAYOUT
    ========================================= */
 .filter-card {
     background: var(--bg-card) !important;
@@ -103,81 +99,88 @@ h2 {
     transition: all 0.3s ease;
 }
 
-/* แถบสีพาสเทลด้านบนของการ์ด */
-.device-item:nth-child(4n+1) .device-card { border-top: 5px solid #a2d2ff !important; }
-.device-item:nth-child(4n+2) .device-card { border-top: 5px solid #ffafcc !important; }
-.device-item:nth-child(4n+3) .device-card { border-top: 5px solid #b9fbc0 !important; }
-.device-item:nth-child(4n+4) .device-card { border-top: 5px solid #ffdec7 !important; }
+/* Border-Top Pastel */
+.device-item:nth-child(4n+1) .device-card { border-top: 5px solid var(--accent-primary) !important; }
+.device-item:nth-child(4n+2) .device-card { border-top: 5px solid var(--status-danger) !important; }
+.device-item:nth-child(4n+3) .device-card { border-top: 5px solid var(--status-success) !important; }
+.device-item:nth-child(4n+4) .device-card { border-top: 5px solid var(--status-warning) !important; }
 
-.device-card:hover {
-    transform: translateY(-6px);
-    border-color: var(--accent-primary) !important;
-    box-shadow: 0 12px 30px rgba(0, 0, 0, 0.08);
-}
+.device-card:hover { transform: translateY(-6px); border-color: var(--accent-primary) !important; }
 
 /* =========================================
-   5. MODALS & FORMS
+   5. MODALS (Fixed Dark Mode & Contrast)
    ========================================= */
 .modal-content {
+    background-color: var(--bg-card) !important;
+    color: var(--text-main) !important;
     border-radius: 30px;
-    border: none !important;
-    box-shadow: 0 25px 50px rgba(0,0,0,0.1);
+    border: 1px solid var(--border-color) !important;
 }
 
-#manageWindowsModal .bg-light {
+.modal-header, .modal-footer { border-color: var(--border-color) !important; }
+
+/* พื้นที่เพิ่มเวอร์ชันใหม่ - แก้ไขเรื่องขอบหาย */
+#manageWindowsModal .bg-light, .add-version-section {
     background: var(--bg-body) !important;
-    border: 2px dashed var(--accent-secondary) !important;
+    border: 2px dashed var(--accent-primary) !important; /* ขอบชัดเจนขึ้น */
     border-radius: 20px;
+    padding: 20px !important;
 }
 
-.form-control, .form-select {
-    background-color: var(--bg-body) !important;
-    border: 2px solid transparent !important;
-    border-radius: 12px;
-    padding: 0.7rem 1rem;
+/* แก้ไขขอบของ Input ในส่วนเพิ่มเวอร์ชัน */
+#manageWindowsModal .form-control {
+    background-color: var(--bg-card) !important;
+    border: 1px solid var(--border-color) !important; /* ให้เห็นขอบชัดเจนใน Light Mode */
+    color: var(--text-main) !important;
 }
 
-.form-control:focus {
-    border-color: var(--accent-primary) !important;
+/* รายการ Windows ใน Modal */
+#currentWindowsList .bg-white, #currentWindowsList .bg-light {
     background-color: var(--bg-inner) !important;
-    box-shadow: none !important;
+    border: 1px solid var(--border-color) !important;
+    color: var(--text-main) !important;
+    border-radius: 15px;
 }
 
 /* =========================================
-   6. BADGES & DASHBOARD
+   6. CHART & STATS (Pastel Glow)
    ========================================= */
-#itemCount {
-    background: #a2d2ff !important;
-    color: white !important;
+.chart-container {
+    background: var(--bg-inner) !important;
+    border: 1px solid var(--border-color) !important;
+    border-radius: 20px;
+    padding: 20px;
+    box-shadow: var(--shadow);
 }
+
+/* ปรับแต่ง Label ใน Chart Modal */
+#dashboardModal .modal-body {
+    background-color: var(--bg-body) !important;
+}
+
+body.dark-mode #dashboardModal .modal-content {
+    background-color: #12141a !important; /* เข้มพิเศษสำหรับหน้าสถิติ */
+}
+
+/* =========================================
+   7. BADGES & MISC
+   ========================================= */
+#itemCount { background: var(--accent-primary) !important; color: #4361ee !important; font-weight: 800; }
 
 .model-badge {
-    background: #f1f3f8;
-    color: #5c677d !important;
-    border: none;
-    font-size: 0.65rem;
-}
-
-body.dark-mode .model-badge {
-    background: #363b47;
-    color: #a2d2ff !important;
-}
-
-.customer-title { 
-    color: var(--text-main) !important; 
-    font-weight: 700;
-}
-
-/* รายการใน Modal */
-#currentWindowsList .bg-white, #currentWindowsList .bg-light {
-    border-radius: 15px;
-    margin-bottom: 10px;
-}
-
-/* Custom Scrollbar */
-::-webkit-scrollbar { width: 8px; }
-::-webkit-scrollbar-track { background: var(--bg-body); }
-::-webkit-scrollbar-thumb {
     background: var(--accent-secondary);
-    border-radius: 10px;
+    color: #4361ee !important;
+    border: none;
 }
+
+body.dark-mode .model-badge { background: #334155; color: var(--accent-primary) !important; }
+
+.customer-title { color: var(--text-main) !important; font-weight: 700; }
+.text-muted, .small { color: var(--text-muted) !important; }
+
+/* Close Button */
+body.dark-mode .btn-close { filter: invert(1) brightness(2); }
+
+/* Scrollbar */
+::-webkit-scrollbar { width: 8px; }
+::-webkit-scrollbar-thumb { background: var(--accent-secondary); border-radius: 10px; }
