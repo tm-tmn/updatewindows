@@ -1,5 +1,4 @@
 :root {
-    /* Palette พื้นฐาน */
     --accent-color: #0d6efd;
     --transition-speed: 0.3s;
 }
@@ -32,39 +31,24 @@ body {
     min-height: 100vh;
 }
 
-/* จัดกึ่งกลาง Header และปรับระยะห่าง */
 h2 { 
     color: var(--text-main) !important; 
     font-weight: 800;
-    text-align: center;      /* จัดข้อความให้อยู่กึ่งกลางหน้าจอ */
+    text-align: center;
     margin-top: 2.5rem;
     margin-bottom: 2rem;
     letter-spacing: -0.02em;
 }
 
-/* --- Luxury Components --- */
-.btn-theme {
-    background: var(--bg-card);
-    color: var(--text-main);
-    border: 1px solid var(--border-color);
-    border-radius: 12px;
+/* --- Buttons --- */
+.btn-icon {
     width: 42px;
     height: 42px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    transition: all 0.2s ease;
-    cursor: pointer;
-}
-
-.btn-icon {
-    width: 42px;  /* ปรับขนาดให้กะทัดรัดเท่าเดิม */
-    height: 42px;
     border-radius: 12px;
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 1.1rem; /* ขนาดไอคอนกำลังดี */
+    font-size: 1.1rem;
     transition: all 0.2s ease;
     border: 1px solid var(--border-color) !important;
     background: var(--bg-card) !important;
@@ -75,53 +59,46 @@ h2 {
     box-shadow: var(--shadow) !important;
 }
 
-/* สไตล์เฉพาะปุ่ม Dashboard (ให้สีโทนฟ้า/น้ำเงิน) */
-.btn-dashboard {
-    background: var(--bg-card);
-    color: var(--accent-color); /* ใช้สีหลักของเว็บ */
-}
+.btn-dashboard { color: var(--accent-color); }
+.btn-theme { color: var(--text-main); }
 
-/* สไตล์เฉพาะปุ่ม Theme (คงเดิม) */
-.btn-theme {
-    background: var(--bg-card);
-    color: var(--text-main);
-}
-
-/* --- ปรับแต่ง Modal ให้ดู Luxury --- */
+/* --- Modal & Dashboard Luxury --- */
 .modal-content {
-    background-color: var(--bg-card);
-    color: var(--text-main);
+    background-color: var(--bg-card) !important;
+    color: var(--text-main) !important;
+    border: 1px solid var(--border-color) !important;
 }
 
-/* ปรับสีพื้นหลังการ์ดภายใน Modal ตาม Theme */
+/* บังคับให้หัวข้อใน Modal เปลี่ยนสีตาม Theme */
+.modal-header .modal-title, 
+.modal-body h6 {
+    color: var(--text-main) !important;
+}
+
+/* ปรับสีปุ่ม Close ใน Dark Mode */
+body.dark-mode .btn-close {
+    filter: invert(1) grayscale(100%) brightness(200%);
+}
+
+/* พื้นหลัง Card ย่อยใน Modal */
 .modal-content .card.bg-light-subtle {
     background-color: var(--bg-body) !important;
-    color: var(--text-main);
+    border: 1px solid var(--border-color) !important;
+    color: var(--text-main) !important;
 }
 
-/* CSS สำหรับ Chart.js ในโหมดมืด (เพื่อให้แกนและตัวเลขสว่างขึ้น) */
-body.dark-mode .modal-content .card.bg-light-subtle canvas {
-    color: white !important;
-}
-
-/* CSS สำหรับ Chart.js ในโหมดมืด เพื่อให้แกนและตัวเลขสว่างขึ้น */
-body.dark-mode #progressPieChart,
-body.dark-mode #engineerBarChart {
-    color: white !important;
-}
-
-/* ปรับสมดุล Filter Card ให้ดู Compact ไม่กว้างเกินไป */
+/* --- Filter Card --- */
 .filter-card {
-    max-width: 850px;        /* ลดความกว้างลงเพื่อให้ดู Balance กับเนื้อหา */
-    margin: 0 auto 3rem auto; /* จัดกึ่งกลางและเพิ่มระยะห่างด้านล่าง */
+    max-width: 850px;
+    margin: 0 auto 3rem auto;
     background-color: var(--bg-card) !important;
     border: 1px solid var(--border-color) !important;
     box-shadow: var(--shadow);
-    border-radius: 24px !important; /* เพิ่มความโค้งให้ดูนุ่มนวล */
+    border-radius: 24px !important;
     padding: 2rem !important;
 }
 
-/* รายการ Card อุปกรณ์ด้านล่าง */
+/* --- Device Card --- */
 .device-card {
     background-color: var(--bg-card) !important;
     border: 1px solid var(--border-color) !important;
@@ -133,67 +110,17 @@ body.dark-mode #engineerBarChart {
     height: 100%;
 }
 
-.device-card:hover {
-    transform: translateY(-4px);
-}
+.device-card:hover { transform: translateY(-4px); }
 
-/* ส่วนท้ายของ Filter (Toggle & Count) */
-.border-top {
-    border-top: 1px solid var(--border-color) !important;
-    padding-top: 1.5rem !important;
-    margin-top: 1rem;
-    opacity: 1;
-}
-
-/* ปรับ Badge ตัวเลขให้นูนเด่น */
+/* --- Badges & Elements --- */
 #itemCount {
     padding: 0.4em 0.8em;
     font-size: 0.85rem;
     font-weight: 700;
     border-radius: 50px;
     background: linear-gradient(135deg, #6e8efb, #4a6cf7) !important;
-    box-shadow: 0 4px 10px rgba(110, 142, 251, 0.3);
 }
 
-/* --- Typography --- */
-.customer-title { 
-    font-size: 1.1rem;
-    font-weight: 700;
-    color: var(--text-main) !important;
-    line-height: 1.3;
-}
-
-.sn-text {
-    font-family: 'JetBrains Mono', monospace;
-    font-size: 0.8rem;
-    color: var(--text-muted) !important;
-}
-
-.text-muted, .small {
-    color: var(--text-muted) !important;
-}
-
-/* --- Forms & Selects --- */
-.form-control, .form-select {
-    background-color: var(--bg-card) !important;
-    color: var(--text-main) !important;
-    border: 1px solid var(--border-color) !important;
-    border-radius: 10px;
-    padding: 0.6rem 1rem;
-}
-
-/* ปรับลูกศร Dropdown ในโหมดมืด */
-body.dark-mode .form-select {
-    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3e%3cpath fill='none' stroke='%23f8f9fa' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='m2 5 6 6 6-6'/%3e%3c/svg%3e");
-}
-
-.form-control:focus, .form-select:focus {
-    border-color: var(--accent-color) !important;
-    box-shadow: 0 0 0 3px rgba(13, 110, 253, 0.15) !important;
-    outline: none;
-}
-
-/* Badge Model */
 .model-badge {
     background: linear-gradient(135deg, #6e8efb, #4a6cf7);
     color: white !important;
@@ -203,15 +130,42 @@ body.dark-mode .form-select {
     font-weight: 700;
 }
 
-/* --- Animation & Mobile --- */
+.border-top { border-color: var(--border-color) !important; opacity: 1; }
+
+/* --- Typography --- */
+.customer-title { 
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: var(--text-main) !important;
+    line-height: 1.3;
+}
+
+.sn-text, .text-muted, .small { color: var(--text-muted) !important; }
+
+/* --- Forms --- */
+.form-control, .form-select {
+    background-color: var(--bg-card) !important;
+    color: var(--text-main) !important;
+    border: 1px solid var(--border-color) !important;
+    border-radius: 10px;
+}
+
+body.dark-mode .form-select {
+    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3e%3cpath fill='none' stroke='%23f8f9fa' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='m2 5 6 6 6-6'/%3e%3c/svg%3e");
+}
+
+.form-control:focus, .form-select:focus {
+    border-color: var(--accent-color) !important;
+    box-shadow: 0 0 0 3px rgba(13, 110, 253, 0.15) !important;
+}
+
+/* --- Animation & Media --- */
 @keyframes fadeIn {
     from { opacity: 0; transform: translateY(10px); }
     to { opacity: 1; transform: translateY(0); }
 }
 
-.device-item {
-    animation: fadeIn 0.4s ease-out forwards;
-}
+.device-item { animation: fadeIn 0.4s ease-out forwards; }
 
 @media (max-width: 768px) {
     .customer-title { font-size: 1rem; }
