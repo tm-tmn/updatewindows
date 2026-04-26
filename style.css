@@ -258,3 +258,44 @@ body.dark-mode .swal2-icon.swal2-success [class^=swal2-success-line] {
 body.dark-mode .swal2-icon.swal2-success .swal2-success-ring {
     border: .25em solid rgba(185, 251, 192, .3) !important; /* Mint green transparent */
 }
+
+/* =========================================
+   9. SELECT STATUS & CHECKMARK
+   ========================================= */
+
+/* เมื่อมีการเลือกค่าแต่ยังบันทึกไม่สำเร็จ หรือกำลังเปลี่ยน (สีเหลืองพาสเทล) */
+.form-select.is-changed {
+    border-color: #ffe66d !important;
+    background-color: #fffdf2 !important;
+    box-shadow: 0 0 0 0.25rem rgba(255, 230, 109, 0.25) !important;
+}
+
+body.dark-mode .form-select.is-changed {
+    background-color: #2d2a1e !important;
+    border-color: #ffd700 !important;
+}
+
+/* เมื่อบันทึกสำเร็จ (สีเขียวพาสเทล) */
+.form-select.is-valid-saved {
+    border-color: var(--status-success) !important;
+    background-color: #f0fff4 !important;
+}
+
+body.dark-mode .form-select.is-valid-saved {
+    background-color: #1b2e1f !important;
+    border-color: var(--status-success) !important;
+}
+
+/* สไตล์ของเครื่องหมายเช็คถูก */
+.status-icon {
+    display: inline-block;
+    margin-left: 5px;
+    font-size: 1rem;
+    vertical-align: middle;
+    transition: all 0.3s ease;
+}
+
+.text-success-pastel {
+    color: #4ade80 !important; /* เขียวสดใสพาสเทล */
+    text-shadow: 0 0 5px rgba(74, 222, 128, 0.3);
+}
