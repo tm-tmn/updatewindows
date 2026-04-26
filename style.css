@@ -172,3 +172,113 @@ body.dark-mode .form-select {
     .device-card { padding: 1rem !important; }
     .filter-card { padding: 1.25rem !important; margin: 0 10px 2rem 10px; }
 }
+
+/* --- Manage Windows Modal (ปุ่ม +) Custom Styles --- */
+#manageWindowsModal .modal-body {
+    background-color: var(--bg-card) !important;
+}
+
+/* รายการเวอร์ชันที่มีอยู่ (List Container) */
+#currentWindowsList .bg-white {
+    background-color: var(--bg-card) !important; /* เปลี่ยนจากสีขาวเป็นสีตาม Theme */
+    border-color: var(--border-color) !important;
+    transition: all 0.2s ease;
+}
+
+#currentWindowsList .bg-white:hover {
+    box-shadow: var(--shadow) !important;
+    transform: translateX(5px);
+}
+
+/* ช่อง Input ในรายการ (ที่กดแก้ไข) */
+#currentWindowsList input[readonly] {
+    color: var(--text-main) !important;
+    cursor: default;
+}
+
+#currentWindowsList .bg-light {
+    background-color: var(--bg-body) !important; /* พื้นหลังตอนกดแก้ไข */
+    color: var(--text-main) !important;
+    border: 1px solid var(--accent-color) !important;
+}
+
+/* ส่วนของ "เพิ่มเวอร์ชันใหม่" (Input & Label) */
+.modal-body label.fw-bold {
+    color: var(--text-main) !important;
+    font-size: 0.9rem;
+    margin-bottom: 0.5rem;
+    display: block;
+}
+
+/* ปรับปรุงปุ่มบันทึกข้อมูลหลักใน Modal */
+.btn-primary.w-100.rounded-pill {
+    background: linear-gradient(135deg, #0d6efd, #0052cc);
+    border: none;
+    padding: 0.8rem;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+    transition: all 0.3s ease;
+}
+
+.btn-primary.w-100.rounded-pill:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 15px rgba(13, 110, 253, 0.3);
+}
+
+/* --- Dashboard & Charts Customization --- */
+#dashboardModal .modal-dialog {
+    max-width: 900px; /* ขยาย Modal กราฟให้กว้างขึ้นเพื่อรองรับ Model Bar Chart */
+}
+
+/* คอนเทนเนอร์สำหรับกราฟ */
+.chart-container {
+    position: relative;
+    margin: auto;
+    padding: 15px;
+    background: var(--bg-body);
+    border-radius: 16px;
+    border: 1px solid var(--border-color);
+}
+
+/* ปรับความสูงของ Model Bar Chart ให้ดูง่าย */
+#modelBarChart {
+    min-height: 300px; 
+}
+
+/* ส่วนหัว Dashboard Progress */
+#dashboardModalLabel {
+    font-weight: 700;
+    background: linear-gradient(45deg, var(--accent-color), #6e8efb);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+/* --- Admin Password Input --- */
+#adminPasswordInput {
+    letter-spacing: 0.2em;
+    text-align: center;
+    font-family: monospace;
+    background-color: var(--bg-body) !important;
+}
+
+/* --- Badge สำหรับสถานะสำเร็จ/รอดำเนินการ (ถ้าใช้ใน Dashboard) --- */
+.status-pill {
+    font-size: 0.75rem;
+    padding: 2px 10px;
+    border-radius: 50px;
+    font-weight: 600;
+}
+.status-done { background-color: #198754; color: white; }
+.status-pending { background-color: #adb5bd; color: white; }
+
+/* ปรับแต่ง Scrollbar สำหรับรายการ Windows ใน Modal (ถ้ามีเยอะ) */
+#currentWindowsList::-webkit-scrollbar {
+    width: 6px;
+}
+#currentWindowsList::-webkit-scrollbar-track {
+    background: var(--bg-body);
+}
+#currentWindowsList::-webkit-scrollbar-thumb {
+    background: var(--border-color);
+    border-radius: 10px;
+}
