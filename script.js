@@ -177,27 +177,17 @@ function calculateAndRenderStats() {
         d.windows && d.windows !== "" && d.windows !== null && d.windows !== "-- เลือก --"
     ).length;
     const remainingItems = totalItems - completedItems;
+    
+    // คำนวณเปอร์เซ็นต์
     const completionPercentage = totalItems > 0 ? ((completedItems / totalItems) * 100).toFixed(1) : 0;
 
-    const engineerStats = {};
-    allData.forEach(d => {
-        const eng = d.engineer || 'ไม่ระบุ';
-        if (!engineerStats[eng]) engineerStats[eng] = { total: 0, completed: 0 };
-        engineerStats[eng].total++;
-        if (d.windows && d.windows !== "" && d.windows !== null && d.windows !== "-- เลือก --") {
-            engineerStats[eng].completed++;
-        }
-    });
+    // อัปเดตหัวข้อใน Modal ให้โชว์ % ทันที
+    const modalTitle = document.querySelector('#dashboardModalLabel');
+    if (modalTitle) {
+        modalTitle.innerHTML = `<i class="bi bi-bar-chart-line-fill text-primary me-2"></i> ความคืบหน้าภาพรวม: ${completionPercentage}%`;
+    }
 
-    const engLabels = Object.keys(engineerStats).sort();
-    const engTotalData = engLabels.map(eng => engineerStats[eng].total);
-    const engCompletedData = engLabels.map(eng => engineerStats[eng].completed);
-
-    const isDarkMode = document.body.classList.contains('dark-mode');
-    const chartTextColor = isDarkMode ? '#f8f9fa' : '#1a1c23';
-    const gridColor = isDarkMode ? 'rgba(255,255,255,0.1)' : 'rgba(0,0,0,0.1)';
-
-    // Pie Chart
+    // ส่วนการตั้งค่า Pie Chart
     const pieCtx = document.getElementById('progressPieChart').getContext('2d');
     if (myPieChart) myPieChart.destroy();
     myPieChart = new Chart(pieCtx, {
@@ -207,14 +197,28 @@ function calculateAndRenderStats() {
             datasets: [{
                 data: [completedItems, remainingItems],
                 backgroundColor: ['#198754', '#adb5bd'],
-                borderColor: isDarkMode ? '#1e1e1e' : '#fff'
+                borderColor: document.body.classList.contains('dark-mode') ? '#1e1e1e' : '#fff'
             }]
         },
         options: {
             responsive: true,
             maintainAspectRatio: false,
             plugins: {
-                legend: { labels: { color: chartTextColor }, position: 'bottom' }
+                legend: { 
+                    position: 'bottom',
+                    labels: { color: document.body.classList.contains('dark-mode') ? '#f8f9fa' : '#1a1c23' }
+                },
+                // แสดงรายละเอียด % เมื่อเอาเมาส์ชี้
+                tooltip: {
+                    callbacks: {
+                        label: function(context) {
+                            let label = context.label || '';
+                            let value = context.raw || 0;
+                            let percentage = totalItems > 0 ? ((value / totalItems) * 100).toFixed(1) : 0;
+                            return ` ${label}: ${value} เครื่อง (${percentage}%)`;
+                        }
+                    }
+                }
             }
         }
     });
