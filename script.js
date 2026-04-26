@@ -14,17 +14,20 @@ function setupTheme() {
     const savedTheme = localStorage.getItem('theme') || 'light-mode';
     body.className = savedTheme;
     updateIcon(savedTheme);
+    // ตั้งค่าสีเริ่มต้นให้ Chart.js ตามธีมที่โหลดมา
+    Chart.defaults.color = savedTheme === 'dark-mode' ? '#f8f9fa' : '#1a1c23';
 
     themeToggle.addEventListener('click', () => {
-        if (body.classList.contains('light-mode')) {
-            body.classList.replace('light-mode', 'dark-mode');
-            localStorage.setItem('theme', 'dark-mode');
-            updateIcon('dark-mode');
-        } else {
-            body.classList.replace('dark-mode', 'light-mode');
-            localStorage.setItem('theme', 'light-mode');
-            updateIcon('light-mode');
-        }
+        const isLight = body.classList.contains('light-mode');
+        const newTheme = isLight ? 'dark-mode' : 'light-mode';
+        
+        body.classList.replace(isLight ? 'light-mode' : 'dark-mode', newTheme);
+        localStorage.setItem('theme', newTheme);
+        updateIcon(newTheme);
+
+        // อัปเดตสีตัวหนังสือใน Chart.js และวาดกราฟใหม่ทันที
+        Chart.defaults.color = newTheme === 'dark-mode' ? '#f8f9fa' : '#1a1c23';
+        if (allData.length > 0) calculateAndRenderStats();
     });
 
     function updateIcon(theme) {
@@ -139,8 +142,6 @@ function filterAndRender() {
 
 async function updateWindows(rowNumber, selectElement) {
     const newValue = selectElement.value;
-    selectElement.classList.remove('is-valid', 'is-invalid');
-    selectElement.style.backgroundColor = "#fff3cd";
     selectElement.disabled = true;
 
     try {
@@ -153,132 +154,99 @@ async function updateWindows(rowNumber, selectElement) {
         const item = allData.find(d => d.rowNumber === rowNumber);
         if (item) item.windows = newValue;
 
+        // อัปเดตกราฟใหม่ทุกครั้งที่มีการบันทึกสำเร็จ
+        calculateAndRenderStats();
+
         const isHideCompleted = document.getElementById('hideCompletedSwitch').checked;
         if (isHideCompleted && newValue !== "") {
             filterAndRender(); 
         } else {
             selectElement.style.backgroundColor = "#d1e7dd";
-            selectElement.style.borderColor = "#198754";
+            setTimeout(() => selectElement.style.backgroundColor = "", 2000);
         }
     } catch (error) {
         alert('บันทึกไม่สำเร็จ!');
-        selectElement.style.backgroundColor = "#f8d7da";
     } finally {
         selectElement.disabled = false;
-        setTimeout(() => {
-            selectElement.style.backgroundColor = "";
-            selectElement.style.borderColor = "";
-        }, 2000);
     }
 }
 
 function calculateAndRenderStats() {
-    // 1. คำนวณภาพรวมโปรเจกต์ (Pie Chart)
     const totalItems = allData.length;
-    // ตรวจสอบว่าช่อง Windows ว่างหรือยังไม่ได้เลือกหรือไม่ (อิงตาม logic ของ toggle)
     const completedItems = allData.filter(d => 
         d.windows && d.windows !== "" && d.windows !== null && d.windows !== "-- เลือก --"
     ).length;
     const remainingItems = totalItems - completedItems;
-    const completionPercentage = ((completedItems / totalItems) * 100).toFixed(1);
+    const completionPercentage = totalItems > 0 ? ((completedItems / totalItems) * 100).toFixed(1) : 0;
 
-    // 2. คำนวณสถิติรายช่าง (Bar Chart)
     const engineerStats = {};
     allData.forEach(d => {
         const eng = d.engineer || 'ไม่ระบุ';
-        if (!engineerStats[eng]) {
-            engineerStats[eng] = { total: 0, completed: 0 };
-        }
+        if (!engineerStats[eng]) engineerStats[eng] = { total: 0, completed: 0 };
         engineerStats[eng].total++;
         if (d.windows && d.windows !== "" && d.windows !== null && d.windows !== "-- เลือก --") {
             engineerStats[eng].completed++;
         }
     });
 
-    const engLabels = Object.keys(engineerStats).sort(); // เรียงชื่อช่าง
+    const engLabels = Object.keys(engineerStats).sort();
     const engTotalData = engLabels.map(eng => engineerStats[eng].total);
     const engCompletedData = engLabels.map(eng => engineerStats[eng].completed);
 
-    // 3. วาดกราฟ Pie Chart (ความคืบหน้าภาพรวม)
-    const pieCtx = document.getElementById('progressPieChart').getContext('2d');
-    
-    // ตรวจสอบ Theme เพื่อปรับสีตัวหนังสือ
-    const currentTheme = document.body.className;
-    Chart.defaults.color = currentTheme === 'dark-mode' ? 'white' : 'black';
+    const isDarkMode = document.body.classList.contains('dark-mode');
+    const chartTextColor = isDarkMode ? '#f8f9fa' : '#1a1c23';
+    const gridColor = isDarkMode ? 'rgba(255,255,255,0.1)' : 'rgba(0,0,0,0.1)';
 
-    if (myPieChart) myPieChart.destroy(); // ถ้ามีกราฟเก่าให้ลบก่อน
+    // Pie Chart
+    const pieCtx = document.getElementById('progressPieChart').getContext('2d');
+    if (myPieChart) myPieChart.destroy();
     myPieChart = new Chart(pieCtx, {
-        type: 'pie', // หรือใช้ 'doughnut' จะดูทันสมัยกว่า
+        type: 'doughnut',
         data: {
             labels: ['สำเร็จ', 'รอดำเนินการ'],
             datasets: [{
                 data: [completedItems, remainingItems],
-                backgroundColor: ['#198754', '#adb5bd'], // เขียว / เทา
-                borderWidth: 1,
-                borderColor: currentTheme === 'dark-mode' ? '#1e1e1e' : '#fff'
+                backgroundColor: ['#198754', '#adb5bd'],
+                borderColor: isDarkMode ? '#1e1e1e' : '#fff'
             }]
         },
         options: {
             responsive: true,
             maintainAspectRatio: false,
             plugins: {
-                legend: { position: 'bottom' },
-                // เพิ่มปลั๊กอินเพื่อแสดงเปอร์เซ็นต์กลางกราฟ
-                tooltip: {
-                    callbacks: {
-                        label: function(context) {
-                            return ` ${context.label}: ${context.raw} เครื่อง (${completionPercentage}%)`;
-                        }
-                    }
-                }
+                legend: { labels: { color: chartTextColor }, position: 'bottom' }
             }
         }
     });
 
-    // 4. วาดกราฟ Bar Chart (ผลงานรายบุคคล)
+    // Bar Chart
     const barCtx = document.getElementById('engineerBarChart').getContext('2d');
-    
     if (myBarChart) myBarChart.destroy();
     myBarChart = new Chart(barCtx, {
         type: 'bar',
         data: {
             labels: engLabels,
-            datasets: [{
-                label: 'สำเร็จ',
-                data: engCompletedData,
-                backgroundColor: '#198754', // สีเขียว
-                borderRadius: 5
-            }, {
-                label: 'ยังไม่สำเร็จ',
-                data: engTotalData,
-                backgroundColor: '#adb5bd', // สีเทา
-                borderRadius: 5
-            }]
+            datasets: [
+                { label: 'สำเร็จ', data: engCompletedData, backgroundColor: '#198754' },
+                { label: 'ทั้งหมด', data: engTotalData, backgroundColor: '#adb5bd' }
+            ]
         },
         options: {
             responsive: true,
             maintainAspectRatio: false,
             scales: {
-                y: {
-                    beginAtZero: true,
-                    ticks: {
-                        stepSize: 1 // ให้แสดงตัวเลขเป็นจำนวนเต็ม (1, 2, 3...)
-                    }
+                y: { 
+                    beginAtZero: true, 
+                    ticks: { color: chartTextColor },
+                    grid: { color: gridColor }
                 },
-                x: {
-                    ticks: {
-                        autoSkip: false, // บังคับแสดงชื่อช่างทุกคน
-                        maxRotation: 45, // หมุนชื่อช่างถ้ามันยาว
-                        minRotation: 0
-                    }
+                x: { 
+                    ticks: { color: chartTextColor },
+                    grid: { display: false }
                 }
             },
             plugins: {
-                legend: { position: 'bottom' },
-                tooltip: {
-                    mode: 'index', // ให้ tooltip แสดงข้อมูลของทั้ง 2 dataset พร้อมกัน
-                    intersect: false
-                }
+                legend: { labels: { color: chartTextColor }, position: 'bottom' }
             }
         }
     });
