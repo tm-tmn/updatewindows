@@ -50,6 +50,7 @@ async function fetchData() {
         setupFilters();
         filterAndRender(); 
         calculateAndRenderStats();
+        renderCurrentWindows();
         
         if (status) status.innerHTML = '';
     } catch (error) {
