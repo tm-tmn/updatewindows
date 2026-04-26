@@ -130,40 +130,55 @@ function filterAndRender() {
     }
 
     filtered.forEach(item => {
-        const optionsHtml = windowsOptions.map(opt => 
-            `<option value="${opt}" ${item.windows === opt ? 'selected' : ''}>${opt}</option>`
-        ).join('');
+    const optionsHtml = windowsOptions.map(opt => 
+        `<option value="${opt}" ${item.windows === opt ? 'selected' : ''}>${opt}</option>`
+    ).join('');
 
-        const card = document.createElement('div');
-        card.className = 'col-12 col-md-6 device-item';
-        card.innerHTML = `
-            <div class="card device-card">
-                <div class="card-body">
-                    <div class="d-flex justify-content-between align-items-start mb-2">
-                        <div class="customer-title">${item.customer || 'N/A'}</div>
-                        <span class="model-badge">${item.model || 'N/A'}</span>
-                    </div>
-                    <div class="text-muted small mb-3">
-                        <i class="bi bi-geo-alt"></i> ${item.city || ''} | <span class="sn-text">S/N: ${item.sn || '-'}</span>
-                    </div>
-                    <div class="small text-muted mb-3" style="border-left: 3px solid #ddd; padding-left: 10px;">
-                        Engineer: <strong>${item.engineer || 'Unassigned'}</strong>
-                    </div>
-                    <label class="small fw-bold mb-2 text-uppercase" style="font-size: 0.7rem; letter-spacing: 0.05em;">Windows Version</label>
-                    <select class="form-select" onchange="updateWindows(${item.rowNumber}, this)">
-                        <option value="">-- Select Windows --</option>
-                        ${optionsHtml}
-                    </select>
+    // เช็คว่ามีค่า Windows อยู่แล้วหรือไม่ เพื่อกำหนดสถานะเริ่มต้น
+    const hasValue = item.windows && item.windows !== "" && item.windows !== "-- Select Windows --";
+
+    const card = document.createElement('div');
+    card.className = 'col-12 col-md-6 device-item';
+    card.innerHTML = `
+        <div class="card device-card">
+            <div class="card-body">
+                <div class="d-flex justify-content-between align-items-start mb-2">
+                    <div class="customer-title">${item.customer || 'N/A'}</div>
+                    <span class="model-badge">${item.model || 'N/A'}</span>
                 </div>
+                <div class="text-muted small mb-3">
+                    <i class="bi bi-geo-alt"></i> ${item.city || ''} | <span class="sn-text">S/N: ${item.sn || '-'}</span>
+                </div>
+                <div class="small text-muted mb-3" style="border-left: 3px solid #ddd; padding-left: 10px;">
+                    Engineer: <strong>${item.engineer || 'Unassigned'}</strong>
+                </div>
+                
+                <label class="small fw-bold mb-2 text-uppercase" style="font-size: 0.7rem; letter-spacing: 0.05em;">
+                    Windows Version
+                    <span id="status-${item.rowNumber}" class="status-icon">
+                        ${hasValue ? '<i class="bi bi-check-circle-fill text-success-pastel"></i>' : ''}
+                    </span>
+                </label>
+
+                <select class="form-select ${hasValue ? 'is-valid-saved' : ''}" onchange="updateWindows(${item.rowNumber}, this)">
+                    <option value="">-- Select Windows --</option>
+                    ${optionsHtml}
+                </select>
             </div>
-        `;
-        container.appendChild(card);
-    });
+        </div>
+    `;
+    container.appendChild(card);
+});
 }
 
 async function updateWindows(rowNumber, selectElement) {
     const newValue = selectElement.value;
+    const statusSpan = document.getElementById(`status-${rowNumber}`);
+    
+    // 1. เริ่มบันทึก: ปิดการใช้งาน และเปลี่ยนเป็นสีเหลือง (is-changed)
     selectElement.disabled = true;
+    selectElement.classList.add('is-changed');
+    selectElement.classList.remove('is-valid-saved');
 
     try {
         await fetch(WEB_APP_URL, {
@@ -175,25 +190,38 @@ async function updateWindows(rowNumber, selectElement) {
         const item = allData.find(d => d.rowNumber === rowNumber);
         if (item) item.windows = newValue;
 
-        // อัปเดตกราฟใหม่ทุกครั้งที่มีการบันทึกสำเร็จ
         calculateAndRenderStats();
 
         const isHideCompleted = document.getElementById('hideCompletedSwitch').checked;
         if (isHideCompleted && newValue !== "") {
             filterAndRender(); 
         } else {
-            selectElement.style.backgroundColor = "#d1e7dd";
-            setTimeout(() => selectElement.style.backgroundColor = "", 2000);
+            // 2. บันทึกสำเร็จ: เอาสีเหลืองออก
+            selectElement.classList.remove('is-changed');
+            
+            if (newValue !== "") {
+                // เปลี่ยนเป็นสีเขียว (is-valid-saved) และใส่เครื่องหมายเช็คถูก
+                selectElement.classList.add('is-valid-saved');
+                if (statusSpan) statusSpan.innerHTML = '<i class="bi bi-check-circle-fill text-success-pastel"></i>';
+                
+                // ค้างสีเขียวไว้ 2 วินาที (Optional: ถ้าอยากให้สีเขียวหายไปเหลือแค่เช็คถูก)
+                setTimeout(() => {
+                    selectElement.classList.remove('is-valid-saved');
+                }, 2000);
+            } else {
+                // ถ้าเปลี่ยนเป็นค่าว่าง (Select Windows) ให้เอาเช็คถูกออก
+                if (statusSpan) statusSpan.innerHTML = '';
+            }
         }
     } catch (error) {
         alert('บันทึกไม่สำเร็จ!');
+        selectElement.classList.remove('is-changed');
     } finally {
         selectElement.disabled = false;
     }
 }
 
 
-// เพิ่ม Event Listener ให้แสดงรายการ Windows เมื่อเปิด Modal
 document.getElementById('manageWindowsModal').addEventListener('show.bs.modal', function () {
     renderCurrentWindows();
 });
