@@ -198,15 +198,13 @@ document.getElementById('manageWindowsModal').addEventListener('show.bs.modal', 
     renderCurrentWindows();
 });
 
-// 1. ฟังก์ชันแสดงรายการแบบแถวพร้อมปุ่ม Edit/Delete
+// 1. [ต้องเก็บไว้] ฟังก์ชันแสดงรายการ (UI)
 function renderCurrentWindows() {
     const listContainer = document.getElementById('currentWindowsList');
     if (!listContainer) return;
-
     listContainer.innerHTML = windowsOptions.map((opt, index) => `
         <div class="d-flex align-items-center gap-2 mb-2 p-2 bg-white border rounded-3 shadow-sm">
-            <input type="text" id="input-win-${index}" class="form-control form-control-sm border-0 bg-transparent" 
-                   value="${opt}" readonly>
+            <input type="text" id="input-win-${index}" class="form-control form-control-sm border-0 bg-transparent" value="${opt}" readonly>
             <div class="d-flex gap-1">
                 <button id="btn-edit-${index}" class="btn btn-outline-primary btn-sm border-0" onclick="toggleEditWindows(${index})">
                     <i class="bi bi-pencil-square"></i>
@@ -219,48 +217,64 @@ function renderCurrentWindows() {
     `).join('');
 }
 
-// 2. ฟังก์ชันสลับโหมด แก้ไข/บันทึก
+// 2. [ต้องเก็บไว้] ฟังก์ชันจัดการปุ่ม แก้ไข/บันทึก บนหน้าจอ
 async function toggleEditWindows(index) {
     const input = document.getElementById(`input-win-${index}`);
     const btn = document.getElementById(`btn-edit-${index}`);
     const isReadOnly = input.hasAttribute('readonly');
 
     if (isReadOnly) {
-        // เปลี่ยนเป็นโหมดพิมพ์ได้
         input.removeAttribute('readonly');
-        input.classList.remove('bg-transparent');
-        input.classList.add('bg-light');
+        input.classList.replace('bg-transparent', 'bg-light');
         input.focus();
         btn.innerHTML = '<i class="bi bi-floppy-fill"></i>';
         btn.classList.replace('btn-outline-primary', 'btn-success');
     } else {
-        // บันทึกข้อมูล
         const newValue = input.value.trim();
-        if (!newValue) return alert("กรุณาระบุชื่อ");
+        if (!newValue) return Swal.fire('แจ้งเตือน', 'กรุณาระบุชื่อเวอร์ชัน', 'warning');
         
-        await updateListOnServer('editWindowsVersion', { index: index, newValue: newValue });
+        Swal.fire({ title: 'กำลังบันทึก...', allowOutsideClick: false, didOpen: () => Swal.showLoading() });
+
+        // เรียกใช้ฟังก์ชันกลาง
+        const success = await updateListOnServer('editWindowsVersion', { index: index, newValue: newValue });
         
-        // คืนค่าสถานะปุ่ม
-        input.setAttribute('readonly', true);
-        input.classList.add('bg-transparent');
-        btn.innerHTML = '<i class="bi bi-pencil-square"></i>';
-        btn.classList.replace('btn-success', 'btn-outline-primary');
+        if (success) {
+            input.setAttribute('readonly', true);
+            input.classList.replace('bg-light', 'bg-transparent');
+            btn.innerHTML = '<i class="bi bi-pencil-square"></i>';
+            btn.classList.replace('btn-success', 'btn-outline-primary');
+            Swal.fire({ icon: 'success', title: 'แก้ไขเรียบร้อย', timer: 1500, showConfirmButton: false });
+        }
     }
 }
 
-// 3. ฟังก์ชันลบข้อมูล
+// 3. [ต้องเก็บไว้] ฟังก์ชันจัดการการกดปุ่มลบ
 async function deleteWindowsVersion(index) {
-    if (!confirm(`ยืนยันการลบเวอร์ชัน: ${windowsOptions[index]} ?`)) return;
-    await updateListOnServer('deleteWindowsVersion', { index: index });
+    const result = await Swal.fire({
+        title: 'ยืนยันการลบ?',
+        text: `คุณต้องการลบ "${windowsOptions[index]}"?`,
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonText: 'ใช่, ลบเลย!'
+    });
+
+    if (result.isConfirmed) {
+        Swal.fire({ title: 'กำลังลบ...', didOpen: () => Swal.showLoading() });
+        await updateListOnServer('deleteWindowsVersion', { index: index });
+        Swal.fire({ icon: 'success', title: 'ลบเรียบร้อย', timer: 1500, showConfirmButton: false });
+    }
 }
 
-// 4. ฟังก์ชันกลางสำหรับส่งข้อมูลไป GAS (ใช้ร่วมกันทั้ง Edit/Delete)
+// 4. [ฟังก์ชันกลาง] ตัวส่งข้อมูลไป Server (อันที่คุณเขียนใหม่)
 async function updateListOnServer(action, payload) {
     const passInput = document.getElementById('adminPasswordInput').value;
     const now = new Date();
     const correctPass = `${String(now.getDate()).padStart(2, '0')}${String(now.getMonth() + 1).padStart(2, '0')}${now.getFullYear()}`;
 
-    if (passInput !== correctPass) return alert("กรุณาใส่รหัสผ่าน Admin ให้ถูกต้องก่อนดำเนินการ");
+    if (passInput !== correctPass) {
+        Swal.fire('ผิดพลาด', 'รหัสผ่าน Admin ไม่ถูกต้อง', 'error');
+        return false;
+    }
 
     try {
         await fetch(WEB_APP_URL, {
@@ -269,85 +283,37 @@ async function updateListOnServer(action, payload) {
             body: JSON.stringify({ action: action, ...payload })
         });
         
-        // อัปเดตข้อมูลในเครื่องและวาดใหม่
         if (action === 'deleteWindowsVersion') {
             windowsOptions.splice(payload.index, 1);
         } else if (action === 'editWindowsVersion') {
             windowsOptions[payload.index] = payload.newValue;
+        } else if (action === 'addWindowsVersion') {
+            windowsOptions.push(payload.versionName);
+            windowsOptions.sort(); // เรียงใหม่เฉพาะตอนเพิ่ม
         }
         
         renderCurrentWindows();
-        filterAndRender(); // อัปเดต Dropdown ในการ์ด
+        filterAndRender(); 
+        return true;
     } catch (e) {
-        alert("เกิดข้อผิดพลาด");
+        Swal.fire('ผิดพลาด', 'ไม่สามารถเชื่อมต่อได้', 'error');
+        return false;
     }
 }
 
-// ฟังก์ชันบันทึกเวอร์ชันใหม่
+// 5. [ฟังก์ชันเพิ่มข้อมูลใหม่]
 async function addNewWindowsVersion() {
     const newVal = document.getElementById('newWindowsInput').value.trim();
-    const passInput = document.getElementById('adminPasswordInput').value;
-    
-    // 1. ตรวจสอบข้อมูลว่าง
-    if (!newVal) {
-        alert("กรุณาระบุชื่อเวอร์ชัน Windows");
-        return;
-    }
+    if (!newVal) return Swal.fire('แจ้งเตือน', 'ระบุชื่อ Windows', 'warning');
 
-    // 2. ตรวจสอบรหัสผ่าน (วันที่ปัจจุบัน)
-    const now = new Date();
-    const day = String(now.getDate()).padStart(2, '0');
-    const month = String(now.getMonth() + 1).padStart(2, '0');
-    const year = now.getFullYear();
-    const correctPass = `${day}${month}${year}`;
+    Swal.fire({ title: 'กำลังบันทึก...', allowOutsideClick: false, didOpen: () => Swal.showLoading() });
 
-    if (passInput !== correctPass) {
-        alert("รหัสผ่านไม่ถูกต้อง!");
-        return;
-    }
+    const success = await updateListOnServer('addWindowsVersion', { versionName: newVal });
 
-    // 3. ตรวจสอบว่ามีชื่อนี้อยู่แล้วหรือไม่
-    if (windowsOptions.includes(newVal)) {
-        alert("เวอร์ชันนี้มีอยู่ในระบบแล้ว");
-        return;
-    }
-
-    // แสดง Loading
-    const btn = event.target;
-    const originalText = btn.innerText;
-    btn.disabled = true;
-    btn.innerText = "กำลังบันทึก...";
-
-    try {
-        const response = await fetch(WEB_APP_URL, {
-            method: 'POST',
-            mode: 'no-cors',
-            body: JSON.stringify({ 
-                action: 'addWindowsVersion', // ส่ง action ไปให้ GAS แยกแยะ
-                versionName: newVal 
-            })
-        });
-
-        // อัปเดตตัวแปร local
-        windowsOptions.push(newVal);
-        windowsOptions.sort(); // จัดเรียงใหม่
-        
-        // ล้างช่องกรอกข้อมูล
+    if (success) {
         document.getElementById('newWindowsInput').value = '';
         document.getElementById('adminPasswordInput').value = '';
-        
-        // รีเฟรชหน้าจอ
-        renderCurrentWindows();
-        filterAndRender(); // อัปเดต dropdown ในการ์ดอุปกรณ์
-        
-        alert("บันทึกสำเร็จ!");
-        
-    } catch (error) {
-        console.error(error);
-        alert("เกิดข้อผิดพลาดในการเชื่อมต่อ");
-    } finally {
-        btn.disabled = false;
-        btn.innerText = originalText;
+        Swal.fire({ icon: 'success', title: 'บันทึกสำเร็จ!', timer: 1500, showConfirmButton: false });
     }
 }
 
