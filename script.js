@@ -262,13 +262,10 @@ async function deleteWindowsVersion(index) {
     });
 
     if (result.isConfirmed) {
-        // ลบบรรทัด Swal.fire({ title: 'กำลังลบ...' }) ที่นี่ออกไปเลยครับ
-        // เพราะเราจะไปใช้ Loading ตัวเดียวที่อยู่ใน updateListOnServer
-        
+       
         const success = await updateListOnServer('deleteWindowsVersion', { index: index });
         
         if (success) {
-            // โชว์ความสำเร็จหลังจากฟังก์ชันกลางทำงานเสร็จและปิดตัวเองไปแล้ว
             Swal.fire({ 
                 icon: 'success', 
                 title: 'ลบเรียบร้อย', 
