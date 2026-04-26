@@ -235,9 +235,6 @@ async function toggleEditWindows(index) {
         
         Swal.fire({ title: 'กำลังบันทึก...', allowOutsideClick: false, didOpen: () => Swal.showLoading() });
 
-        // เรียกใช้ฟังก์ชันกลาง
-        const success = await updateListOnServer('editWindowsVersion', { index: index, newValue: newValue });
-        
         if (success) {
             input.setAttribute('readonly', true);
             input.classList.replace('bg-light', 'bg-transparent');
@@ -287,7 +284,6 @@ async function updateListOnServer(action, payload) {
     // 1. ตรวจสอบรหัสผ่านก่อนทำอย่างอื่น
     if (passInput !== correctPass) {
         passField.value = ''; // เคลียร์ทันทีที่ผิด
-        // ใช้ await เพื่อให้มั่นใจว่า Swal ผิดพลาดแสดงผลเสร็จก่อนจะทำอย่างอื่น
         await Swal.fire({
             icon: 'error',
             title: 'ผิดพลาด',
@@ -332,6 +328,7 @@ async function updateListOnServer(action, payload) {
     } catch (e) {
         console.error(e);
         passField.value = '';
+        Swal.close();
         await Swal.fire('ผิดพลาด', 'ไม่สามารถเชื่อมต่อเซิร์ฟเวอร์ได้', 'error');
         return false;
     }
@@ -343,8 +340,6 @@ async function addNewWindowsVersion() {
     if (!newVal) return Swal.fire('แจ้งเตือน', 'ระบุชื่อ Windows', 'warning');
 
     Swal.fire({ title: 'กำลังบันทึก...', allowOutsideClick: false, didOpen: () => Swal.showLoading() });
-
-    const success = await updateListOnServer('addWindowsVersion', { versionName: newVal });
 
     if (success) {
         document.getElementById('newWindowsInput').value = '';
