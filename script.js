@@ -244,12 +244,12 @@ function calculateAndRenderStats() {
         data: {
             labels: engLabels,
             datasets: [{
-                label: 'เครื่องที่สำเร็จ',
+                label: 'สำเร็จ',
                 data: engCompletedData,
                 backgroundColor: '#198754', // สีเขียว
                 borderRadius: 5
             }, {
-                label: 'เครื่องที่ต้องทำ',
+                label: 'ยังไม่สำเร็จ',
                 data: engTotalData,
                 backgroundColor: '#adb5bd', // สีเทา
                 borderRadius: 5
