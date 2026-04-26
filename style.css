@@ -37,6 +37,44 @@ body.dark-mode {
 }
 
 /* =========================================
+   FIX MODAL & CARDS IN DARK MODE
+   ========================================= */
+
+/* คุมพื้นหลังของการ์ดใน Modal (ที่ใช้ bg-light-subtle) */
+.bg-light-subtle {
+    background-color: var(--bg-inner) !important; /* ใช้สี inner ของ theme เรา */
+    transition: background-color var(--transition-speed) ease;
+}
+
+/* คุมสีตัวหนังสือใน Modal ให้ชัดเจน */
+.modal-content .fw-bold, 
+.modal-content h5, 
+.modal-content h6 {
+    color: var(--text-main) !important;
+}
+
+/* ปรับสี Select Filter ใน Modal */
+#modelEngineerFilter {
+    background-color: var(--bg-card) !important;
+    color: var(--text-main) !important;
+    border: 1px solid var(--border-color) !important;
+}
+
+/* แก้ไขสีพื้นหลัง Modal Body ให้มืดลงใน Dark Mode */
+body.dark-mode .modal-content {
+    background-color: var(--bg-card) !important;
+}
+
+body.dark-mode .modal-header {
+    border-bottom: 1px solid var(--border-color) !important;
+}
+
+/* ปรับสีของ Canvas/Chart ให้ดูนุ่มนวลขึ้นในโหมดมืด */
+body.dark-mode canvas {
+    filter: drop-shadow(0 0 5px rgba(162, 210, 255, 0.1));
+}
+
+/* =========================================
    2. GLOBAL STYLES & TYPOGRAPHY
    ========================================= */
 body {
