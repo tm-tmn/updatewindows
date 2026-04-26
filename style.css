@@ -1,9 +1,11 @@
+/* =========================================
+   1. VARIABLES & CORE THEMES
+   ========================================= */
 :root {
     --accent-color: #0d6efd;
     --transition-speed: 0.3s;
 }
 
-/* --- Theme Color Mapping --- */
 body.light-mode {
     --bg-body: #f8f9fa;
     --bg-card: #ffffff;
@@ -22,7 +24,9 @@ body.dark-mode {
     --shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
 }
 
-/* --- Global Styles --- */
+/* =========================================
+   2. GLOBAL STYLES
+   ========================================= */
 body {
     background-color: var(--bg-body) !important;
     color: var(--text-main) !important;
@@ -40,7 +44,11 @@ h2 {
     letter-spacing: -0.02em;
 }
 
-/* --- Buttons --- */
+.border-top { border-color: var(--border-color) !important; opacity: 1; }
+
+/* =========================================
+   3. BUTTONS & INPUTS
+   ========================================= */
 .btn-icon {
     width: 42px;
     height: 42px;
@@ -52,6 +60,7 @@ h2 {
     transition: all 0.2s ease;
     border: 1px solid var(--border-color) !important;
     background: var(--bg-card) !important;
+    color: var(--text-main) !important;
 }
 
 .btn-icon:hover {
@@ -59,158 +68,12 @@ h2 {
     box-shadow: var(--shadow) !important;
 }
 
+/* เฉพาะปุ่มบวก และปุ่ม Theme */
+.btn-add:hover { color: var(--accent-color) !important; }
 .btn-dashboard { color: var(--accent-color); }
 .btn-theme { color: var(--text-main); }
 
-/* --- Modal & Dashboard Luxury --- */
-.modal-content {
-    background-color: var(--bg-card) !important;
-    color: var(--text-main) !important;
-    border: 1px solid var(--border-color) !important;
-}
-
-/* บังคับให้หัวข้อใน Modal เปลี่ยนสีตาม Theme */
-.modal-header .modal-title, 
-.modal-body h6 {
-    color: var(--text-main) !important;
-}
-
-/* ปรับสีปุ่ม Close ใน Dark Mode */
-body.dark-mode .btn-close {
-    filter: invert(1) grayscale(100%) brightness(200%);
-}
-
-/* พื้นหลัง Card ย่อยใน Modal */
-.modal-content .card.bg-light-subtle {
-    background-color: var(--bg-body) !important;
-    border: 1px solid var(--border-color) !important;
-    color: var(--text-main) !important;
-}
-
-/* --- Filter Card --- */
-.filter-card {
-    max-width: 850px;
-    margin: 0 auto 3rem auto;
-    background-color: var(--bg-card) !important;
-    border: 1px solid var(--border-color) !important;
-    box-shadow: var(--shadow);
-    border-radius: 24px !important;
-    padding: 2rem !important;
-}
-
-/* --- Device Card --- */
-.device-card {
-    background-color: var(--bg-card) !important;
-    border: 1px solid var(--border-color) !important;
-    box-shadow: var(--shadow);
-    border-radius: 18px;
-    padding: 1.5rem !important;
-    transition: transform 0.2s ease;
-    color: var(--text-main) !important;
-    height: 100%;
-}
-
-.device-card:hover { transform: translateY(-4px); }
-
-/* --- Badges & Elements --- */
-#itemCount {
-    padding: 0.4em 0.8em;
-    font-size: 0.85rem;
-    font-weight: 700;
-    border-radius: 50px;
-    background: linear-gradient(135deg, #6e8efb, #4a6cf7) !important;
-}
-
-.model-badge {
-    background: linear-gradient(135deg, #6e8efb, #4a6cf7);
-    color: white !important;
-    padding: 4px 12px;
-    border-radius: 50px;
-    font-size: 0.7rem;
-    font-weight: 700;
-}
-
-.border-top { border-color: var(--border-color) !important; opacity: 1; }
-
-/* --- Typography --- */
-.customer-title { 
-    font-size: 1.1rem;
-    font-weight: 700;
-    color: var(--text-main) !important;
-    line-height: 1.3;
-}
-
-.sn-text, .text-muted, .small { color: var(--text-muted) !important; }
-
-/* --- Forms --- */
-.form-control, .form-select {
-    background-color: var(--bg-card) !important;
-    color: var(--text-main) !important;
-    border: 1px solid var(--border-color) !important;
-    border-radius: 10px;
-}
-
-body.dark-mode .form-select {
-    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3e%3cpath fill='none' stroke='%23f8f9fa' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='m2 5 6 6 6-6'/%3e%3c/svg%3e");
-}
-
-.form-control:focus, .form-select:focus {
-    border-color: var(--accent-color) !important;
-    box-shadow: 0 0 0 3px rgba(13, 110, 253, 0.15) !important;
-}
-
-/* --- Animation & Media --- */
-@keyframes fadeIn {
-    from { opacity: 0; transform: translateY(10px); }
-    to { opacity: 1; transform: translateY(0); }
-}
-
-.device-item { animation: fadeIn 0.4s ease-out forwards; }
-
-@media (max-width: 768px) {
-    .customer-title { font-size: 1rem; }
-    .device-card { padding: 1rem !important; }
-    .filter-card { padding: 1.25rem !important; margin: 0 10px 2rem 10px; }
-}
-
-/* --- Manage Windows Modal (ปุ่ม +) Custom Styles --- */
-#manageWindowsModal .modal-body {
-    background-color: var(--bg-card) !important;
-}
-
-/* รายการเวอร์ชันที่มีอยู่ (List Container) */
-#currentWindowsList .bg-white {
-    background-color: var(--bg-card) !important; /* เปลี่ยนจากสีขาวเป็นสีตาม Theme */
-    border-color: var(--border-color) !important;
-    transition: all 0.2s ease;
-}
-
-#currentWindowsList .bg-white:hover {
-    box-shadow: var(--shadow) !important;
-    transform: translateX(5px);
-}
-
-/* ช่อง Input ในรายการ (ที่กดแก้ไข) */
-#currentWindowsList input[readonly] {
-    color: var(--text-main) !important;
-    cursor: default;
-}
-
-#currentWindowsList .bg-light {
-    background-color: var(--bg-body) !important; /* พื้นหลังตอนกดแก้ไข */
-    color: var(--text-main) !important;
-    border: 1px solid var(--accent-color) !important;
-}
-
-/* ส่วนของ "เพิ่มเวอร์ชันใหม่" (Input & Label) */
-.modal-body label.fw-bold {
-    color: var(--text-main) !important;
-    font-size: 0.9rem;
-    margin-bottom: 0.5rem;
-    display: block;
-}
-
-/* ปรับปรุงปุ่มบันทึกข้อมูลหลักใน Modal */
+/* ปรับปรุงปุ่มบันทึกหลัก */
 .btn-primary.w-100.rounded-pill {
     background: linear-gradient(135deg, #0d6efd, #0052cc);
     border: none;
@@ -225,12 +88,80 @@ body.dark-mode .form-select {
     box-shadow: 0 4px 15px rgba(13, 110, 253, 0.3);
 }
 
-/* --- Dashboard & Charts Customization --- */
-#dashboardModal .modal-dialog {
-    max-width: 900px; /* ขยาย Modal กราฟให้กว้างขึ้นเพื่อรองรับ Model Bar Chart */
+/* Forms */
+.form-control, .form-select {
+    background-color: var(--bg-card) !important;
+    color: var(--text-main) !important;
+    border: 1px solid var(--border-color) !important;
+    border-radius: 10px;
 }
 
-/* คอนเทนเนอร์สำหรับกราฟ */
+body.dark-mode .form-control { background-color: #2b2b2b !important; }
+
+body.dark-mode .form-select {
+    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3e%3cpath fill='none' stroke='%23f8f9fa' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='m2 5 6 6 6-6'/%3e%3c/svg%3e");
+}
+
+/* =========================================
+   4. CARDS & LAYOUT
+   ========================================= */
+.filter-card {
+    max-width: 850px;
+    margin: 0 auto 3rem auto;
+    background-color: var(--bg-card) !important;
+    border: 1px solid var(--border-color) !important;
+    box-shadow: var(--shadow);
+    border-radius: 24px !important;
+    padding: 2rem !important;
+}
+
+.device-card {
+    background-color: var(--bg-card) !important;
+    border: 1px solid var(--border-color) !important;
+    box-shadow: var(--shadow);
+    border-radius: 18px;
+    padding: 1.5rem !important;
+    transition: transform 0.2s ease;
+    color: var(--text-main) !important;
+    height: 100%;
+}
+
+.device-card:hover { transform: translateY(-4px); }
+
+/* =========================================
+   5. MODALS (Manage Windows & Charts)
+   ========================================= */
+.modal-content, .modal-header, .modal-body, .modal-footer {
+    background-color: var(--bg-card) !important;
+    color: var(--text-main) !important;
+    border-color: var(--border-color) !important;
+}
+
+.modal-header .modal-title, .modal-body h6, .modal-body label {
+    color: var(--text-main) !important;
+}
+
+body.dark-mode .btn-close {
+    filter: invert(1) grayscale(100%) brightness(200%);
+}
+
+/* รายการ Windows Version ใน Modal */
+#currentWindowsList .bg-white, 
+#currentWindowsList .bg-light,
+.modal-content .card.bg-light-subtle {
+    background-color: var(--bg-body) !important;
+    border: 1px solid var(--border-color) !important;
+    color: var(--text-main) !important;
+}
+
+/* ปุ่มแก้ไข/ลบ ในรายการ */
+#currentWindowsList .btn-outline-primary { color: var(--accent-color); border-color: var(--accent-color); }
+#currentWindowsList .btn-outline-danger { color: #dc3545; border-color: #dc3545; }
+body.dark-mode #currentWindowsList .btn:hover { color: #fff !important; }
+
+/* Charts & Dashboard Progress */
+#dashboardModal .modal-dialog { max-width: 900px; }
+
 .chart-container {
     position: relative;
     margin: auto;
@@ -240,12 +171,6 @@ body.dark-mode .form-select {
     border: 1px solid var(--border-color);
 }
 
-/* ปรับความสูงของ Model Bar Chart ให้ดูง่าย */
-#modelBarChart {
-    min-height: 300px; 
-}
-
-/* ส่วนหัว Dashboard Progress */
 #dashboardModalLabel {
     font-weight: 700;
     background: linear-gradient(45deg, var(--accent-color), #6e8efb);
@@ -253,32 +178,37 @@ body.dark-mode .form-select {
     -webkit-text-fill-color: transparent;
 }
 
-/* --- Admin Password Input --- */
-#adminPasswordInput {
-    letter-spacing: 0.2em;
-    text-align: center;
-    font-family: monospace;
-    background-color: var(--bg-body) !important;
-}
-
-/* --- Badge สำหรับสถานะสำเร็จ/รอดำเนินการ (ถ้าใช้ใน Dashboard) --- */
-.status-pill {
-    font-size: 0.75rem;
-    padding: 2px 10px;
+/* =========================================
+   6. MISC & ANIMATIONS
+   ========================================= */
+#itemCount, .model-badge {
+    background: linear-gradient(135deg, #6e8efb, #4a6cf7);
+    color: white !important;
+    padding: 4px 12px;
     border-radius: 50px;
-    font-weight: 600;
+    font-weight: 700;
 }
-.status-done { background-color: #198754; color: white; }
-.status-pending { background-color: #adb5bd; color: white; }
 
-/* ปรับแต่ง Scrollbar สำหรับรายการ Windows ใน Modal (ถ้ามีเยอะ) */
-#currentWindowsList::-webkit-scrollbar {
-    width: 6px;
+#itemCount { font-size: 0.85rem; }
+.model-badge { font-size: 0.7rem; }
+
+.customer-title { font-size: 1.1rem; font-weight: 700; color: var(--text-main) !important; }
+.sn-text, .text-muted, .small { color: var(--text-muted) !important; }
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
 }
-#currentWindowsList::-webkit-scrollbar-track {
-    background: var(--bg-body);
-}
-#currentWindowsList::-webkit-scrollbar-thumb {
-    background: var(--border-color);
-    border-radius: 10px;
+.device-item { animation: fadeIn 0.4s ease-out forwards; }
+
+/* Scrollbar */
+#currentWindowsList::-webkit-scrollbar { width: 6px; }
+#currentWindowsList::-webkit-scrollbar-track { background: var(--bg-body); }
+#currentWindowsList::-webkit-scrollbar-thumb { background: var(--border-color); border-radius: 10px; }
+
+/* Media Queries */
+@media (max-width: 768px) {
+    .customer-title { font-size: 1rem; }
+    .device-card { padding: 1rem !important; }
+    .filter-card { padding: 1.25rem !important; margin: 0 10px 2rem 10px; }
 }
