@@ -223,7 +223,12 @@ function calculateAndRenderStats() {
             plugins: {
                 legend: { 
                     position: 'bottom',
-                    labels: { color: chartTextColor }
+                    labels: { 
+                        color: chartTextColor,
+                        usePointStyle: true, // ทำให้สัญลักษณ์หน้าคำอธิบายเป็นวงกลม (ถ้าชอบ)
+                    },
+                    // --- เพิ่มบรรทัดนี้เพื่อปิดการคลิกที่ Legend ---
+                    onClick: (e) => e.stopPropagation() 
                 },
                 tooltip: {
                     callbacks: {
