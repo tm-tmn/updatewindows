@@ -191,6 +191,91 @@ async function updateWindows(rowNumber, selectElement) {
     }
 }
 
+
+// เพิ่ม Event Listener ให้แสดงรายการ Windows เมื่อเปิด Modal
+document.getElementById('manageWindowsModal').addEventListener('show.bs.modal', function () {
+    renderCurrentWindows();
+});
+
+// ฟังก์ชันแสดงรายการ Windows ใน Modal
+function renderCurrentWindows() {
+    const listContainer = document.getElementById('currentWindowsList');
+    if (!listContainer) return;
+    
+    listContainer.innerHTML = windowsOptions.map(opt => 
+        `<span class="badge bg-secondary-subtle text-dark border p-2">${opt}</span>`
+    ).join('');
+}
+
+// ฟังก์ชันบันทึกเวอร์ชันใหม่
+async function addNewWindowsVersion() {
+    const newVal = document.getElementById('newWindowsInput').value.trim();
+    const passInput = document.getElementById('adminPasswordInput').value;
+    
+    // 1. ตรวจสอบข้อมูลว่าง
+    if (!newVal) {
+        alert("กรุณาระบุชื่อเวอร์ชัน Windows");
+        return;
+    }
+
+    // 2. ตรวจสอบรหัสผ่าน (วันที่ปัจจุบัน)
+    const now = new Date();
+    const day = String(now.getDate()).padStart(2, '0');
+    const month = String(now.getMonth() + 1).padStart(2, '0');
+    const year = now.getFullYear();
+    const correctPass = `${day}${month}${year}`;
+
+    if (passInput !== correctPass) {
+        alert("รหัสผ่านไม่ถูกต้อง!");
+        return;
+    }
+
+    // 3. ตรวจสอบว่ามีชื่อนี้อยู่แล้วหรือไม่
+    if (windowsOptions.includes(newVal)) {
+        alert("เวอร์ชันนี้มีอยู่ในระบบแล้ว");
+        return;
+    }
+
+    // แสดง Loading
+    const btn = event.target;
+    const originalText = btn.innerText;
+    btn.disabled = true;
+    btn.innerText = "กำลังบันทึก...";
+
+    try {
+        const response = await fetch(WEB_APP_URL, {
+            method: 'POST',
+            mode: 'no-cors',
+            body: JSON.stringify({ 
+                action: 'addWindowsVersion', // ส่ง action ไปให้ GAS แยกแยะ
+                versionName: newVal 
+            })
+        });
+
+        // อัปเดตตัวแปร local
+        windowsOptions.push(newVal);
+        windowsOptions.sort(); // จัดเรียงใหม่
+        
+        // ล้างช่องกรอกข้อมูล
+        document.getElementById('newWindowsInput').value = '';
+        document.getElementById('adminPasswordInput').value = '';
+        
+        // รีเฟรชหน้าจอ
+        renderCurrentWindows();
+        filterAndRender(); // อัปเดต dropdown ในการ์ดอุปกรณ์
+        
+        alert("บันทึกสำเร็จ!");
+        
+    } catch (error) {
+        console.error(error);
+        alert("เกิดข้อผิดพลาดในการเชื่อมต่อ");
+    } finally {
+        btn.disabled = false;
+        btn.innerText = originalText;
+    }
+}
+
+
 function calculateAndRenderStats() {
     const totalItems = allData.length;
     const completedItems = allData.filter(d => 
